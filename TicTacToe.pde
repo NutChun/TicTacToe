@@ -35,16 +35,16 @@ void draw() {
   margin = (width-minWidth)/2;
   
   if (checker) {
-//    line(100 + (width - 300) / 2, (height - 300) / 2 + 10, 100 + (width - 300) / 2, 300 + (height - 300) / 2 - 10);
-//    line(200 + (width - 300) / 2, (height - 300) / 2 + 10, 200 + (width - 300) / 2, 300 + (height - 300) / 2 - 10);
-//    line((width - 300) / 2 + 10, 100 + (height - 300) / 2, 300 + (width - 300) / 2 - 10, 100 + (height - 300) / 2);
-//    line((width - 300) / 2 + 10, 200 + (height - 300) / 2, 300 + (width - 300) / 2 - 10, 200 + (height - 300) / 2);
+    //line(100 + (width - 300) / 2, (height - 300) / 2 + 10, 100 + (width - 300) / 2, 300 + (height - 300) / 2 - 10);
+    //line(200 + (width - 300) / 2, (height - 300) / 2 + 10, 200 + (width - 300) / 2, 300 + (height - 300) / 2 - 10);
+    //line((width - 300) / 2 + 10, 100 + (height - 300) / 2, 300 + (width - 300) / 2 - 10, 100 + (height - 300) / 2);
+    //line((width - 300) / 2 + 10, 200 + (height - 300) / 2, 300 + (width - 300) / 2 - 10, 200 + (height - 300) / 2);
     // vert
-//    line(margin+minWidth / col, gridSize + 8, margin+minWidth / col, gridSize + minWidth - 8);
-//    line(2 * minWidth / col + margin, gridSize + 8, 2 * minWidth / col + margin, gridSize + minWidth - 8);
+    //line(margin+minWidth / col, gridSize + 8, margin+minWidth / col, gridSize + minWidth - 8);
+    //line(2 * minWidth / col + margin, gridSize + 8, 2 * minWidth / col + margin, gridSize + minWidth - 8);
     // horiz
-//    line(margin+8, minWidth/row+gridSize, margin+minWidth-8, minWidth/row+gridSize);
-//    line(margin+8, 2*minWidth/row+gridSize, margin+minWidth-8, 2*minWidth/row+gridSize);
+    //line(margin+8, minWidth/row+gridSize, margin+minWidth-8, minWidth/row+gridSize);
+    //line(margin+8, 2*minWidth/row+gridSize, margin+minWidth-8, 2*minWidth/row+gridSize);
     
     // vert
 //    for (int i = 1; i < col; i++) {
@@ -55,7 +55,7 @@ void draw() {
 //    for (int i = 1; i < row; i++) {
 //      line(margin + 8, (i * minWidth) / row + gridSize, margin + minWidth - 8, (i * minWidth) / row + gridSize);
 //    }
-
+    
     drawGrid();
   }
   
@@ -72,9 +72,12 @@ void draw() {
   if (checker) {
     int n = 0;
     //fill(0);
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
-        symbol(padLeft+50+100*j, padTop+50+100*i, en[n], type[n]);
+    for (int i = 0; i < col; i++) {
+      for (int j = 0; j < row; j++) {
+        //symbol(padLeft+50+100*j, padTop+50+100*i, en[n], type[n]);
+        symbol((minWidth * (2 * i + 1)) / ( 2 * col),
+            (minWidth * (2 * j + 1)) / ( 2 * row),
+            newGrid[i][j]);
         n++;
       }
     }
@@ -233,98 +236,99 @@ void draw() {
   fill(0);
   textAlign(CENTER, CENTER);
   text(str, width/2, (height-300)/2+320 + 15);
-  noFill();
+  noFill(); //<>//
 }
 
 void mousePressed() {
-  //if (mouseButton == LEFT) {
+  if (mouseButton == LEFT) {
     if (checker) {
-      if (mouseX > padLeft && mouseX < 300 + padLeft && mouseY > padTop && mouseY < 300 + padTop) {
-        if (mouseX > padLeft && mouseX < 100 + padLeft) {
-          if (mouseY > padTop && mouseY < 100+padTop) {
-            if (en[0] == 0) {
-              en[0] = 1;
-              type[0] = turn;
-              turn = 1-turn;
-            }
-            //symbol(padLeft+50, padTop+50, en[0]);
-          } else if (mouseY > padTop+100 && mouseY < padTop+200) {
-            if (en[3] == 0) {
-              en[3] = 1;
-              type[3] = turn;
-              turn = 1-turn;
-            }
-            //symbol(padLeft+50, padTop+50+100, en[3]);
-          } else if (mouseY > padTop+200 && mouseY < padTop+300) {
-            if (en[6] == 0) {
-              en[6] = 1;
-              type[6] = turn;
-              turn = 1-turn;
-            }
-            //symbol(padLeft+50, padTop+50+200, en[6]);
-          }
-        } else if (mouseX > padLeft+100 && mouseX < padLeft+200) {
-          if (mouseY > padTop && mouseY < 100+padTop) {
-            if (en[1] == 0) {
-              en[1] = 1;
-              type[1] = turn;
-              turn = 1-turn;
-            }
-            //symbol(padLeft+50+100, padTop+50, en[1]);
-          } else if (mouseY > padTop+100 && mouseY < padTop+200) {
-            if (en[4] == 0) {
-              en[4] = 1;
-              type[4] = turn;
-              turn = 1-turn;
-            }
-            //symbol(padLeft+50+100, padTop+50+100, en[4]);
-          } else if (mouseY > padTop+200 && mouseY < padTop+300) {
-            if (en[7] == 0) {
-              en[7] = 1;
-              type[7] = turn;
-              turn = 1-turn;
-            }
-            //symbol(padLeft+50+100, padTop+50+200, en[7]);
-          }
-        } else if (mouseX > padLeft+200 && mouseX < padLeft+300) {
-          if (mouseY > padTop && mouseY < 100+padTop) {
-            if (en[2] == 0) {
-              en[2] = 1;
-              type[2] = turn;
-              turn = 1-turn;
-            }
-            //symbol(padLeft+50+200, padTop+50, en[2]);
-          } else if (mouseY > padTop+100 && mouseY < padTop+200) {
-            if (en[5] == 0) {
-              en[5] = 1;
-              type[5] = turn;
-              turn = 1-turn;
-            }
-            //symbol(padLeft+50+200, padTop+50+100, en[5]);
-          } else if (mouseY > padTop+200 && mouseY < padTop+300) {
-            if (en[8] != 1) {
-              en[8] = 1;
-              type[8] = turn;
-              turn = 1-turn;
-            }
-             //symbol(padLeft+50+200, padTop+50+200, en[8]);
-          }
-        }
-        //if (num < 9) {
-        //  turn = 1-turn;
-        //}
-        num++;
-      }
+      cellArea();
+      //if (mouseX > padLeft && mouseX < 300 + padLeft && mouseY > padTop && mouseY < 300 + padTop) {
+      //  if (mouseX > padLeft && mouseX < 100 + padLeft) {
+      //    if (mouseY > padTop && mouseY < 100+padTop) {
+      //      if (en[0] == 0) {
+      //        en[0] = 1;
+      //        type[0] = turn;
+      //        turn = 1-turn;
+      //      }
+      //      //symbol(padLeft+50, padTop+50, en[0]);
+      //    } else if (mouseY > padTop+100 && mouseY < padTop+200) {
+      //      if (en[3] == 0) {
+      //        en[3] = 1;
+      //        type[3] = turn;
+      //        turn = 1-turn;
+      //      }
+      //      //symbol(padLeft+50, padTop+50+100, en[3]);
+      //    } else if (mouseY > padTop+200 && mouseY < padTop+300) {
+      //      if (en[6] == 0) {
+      //        en[6] = 1;
+      //        type[6] = turn;
+      //        turn = 1-turn;
+      //      }
+      //      //symbol(padLeft+50, padTop+50+200, en[6]);
+      //    }
+      //  } else if (mouseX > padLeft+100 && mouseX < padLeft+200) {
+      //    if (mouseY > padTop && mouseY < 100+padTop) {
+      //      if (en[1] == 0) {
+      //        en[1] = 1;
+      //        type[1] = turn;
+      //        turn = 1-turn;
+      //      }
+      //      //symbol(padLeft+50+100, padTop+50, en[1]);
+      //    } else if (mouseY > padTop+100 && mouseY < padTop+200) {
+      //      if (en[4] == 0) {
+      //        en[4] = 1;
+      //        type[4] = turn;
+      //        turn = 1-turn;
+      //      }
+      //      //symbol(padLeft+50+100, padTop+50+100, en[4]);
+      //    } else if (mouseY > padTop+200 && mouseY < padTop+300) {
+      //      if (en[7] == 0) {
+      //        en[7] = 1;
+      //        type[7] = turn;
+      //        turn = 1-turn;
+      //      }
+      //      //symbol(padLeft+50+100, padTop+50+200, en[7]);
+      //    }
+      //  } else if (mouseX > padLeft+200 && mouseX < padLeft+300) {
+      //    if (mouseY > padTop && mouseY < 100+padTop) {
+      //      if (en[2] == 0) {
+      //        en[2] = 1;
+      //        type[2] = turn;
+      //        turn = 1-turn;
+      //      }
+      //      //symbol(padLeft+50+200, padTop+50, en[2]);
+      //    } else if (mouseY > padTop+100 && mouseY < padTop+200) {
+      //      if (en[5] == 0) {
+      //        en[5] = 1;
+      //        type[5] = turn;
+      //        turn = 1-turn;
+      //      }
+      //      //symbol(padLeft+50+200, padTop+50+100, en[5]);
+      //    } else if (mouseY > padTop+200 && mouseY < padTop+300) {
+      //      if (en[8] != 1) {
+      //        en[8] = 1;
+      //        type[8] = turn;
+      //        turn = 1-turn;
+      //      }
+      //       //symbol(padLeft+50+200, padTop+50+200, en[8]);
+      //    }
+      //  }
+      //  //if (num < 9) {
+      //  //  turn = 1-turn;
+      //  //}
+      //  num++;
+      //}
     } else {
       if (mouseX > padLeft && mouseX < padLeft + 300 &&
           mouseY > padTop && mouseY < padTop + 300) {
-        en = new int[9];
-        type = new int[9];
-        num = 0;
-        turn = 1;
-        checker = true;
-        delayTime = false;
-        result = "";
+        //en = new int[9];
+        //type = new int[9];
+        //num = 0;
+        //turn = 1;
+        //checker = true;
+        //delayTime = false;
+        //result = "";
       }
     }
     String str = "NEW GAME";
@@ -340,7 +344,7 @@ void mousePressed() {
           delayTime = false;
           result = "";
     }
-  //}
+  }
 }
 
 void symbol(float x, float y, int en, int type) {
@@ -360,6 +364,24 @@ void symbol(float x, float y, int en, int type) {
       line(x-25,y-25,x+25,y+25);
       line(x-25,y+25,x+25,y-25);
     }
+  }
+  noFill();
+}
+
+void symbol(float x, float y, int type) {
+  float sSize = minWidth / (col * 2);
+  if (type == 1) {
+    strokeWeight((2 * minWidth) / (25 * col));
+    strokeCap(PROJECT);
+    stroke(#FFF8E1);
+    ellipse(margin + x, gridSize + y, minWidth / (col * 2), minWidth / (col * 2));
+  } else if (type == 2) {
+    fill(0);
+    strokeWeight((2 * minWidth) / (25 * col));
+    strokeCap(PROJECT);
+    stroke(#424242);
+    line(margin + x - sSize / 2, gridSize + y - sSize / 2, margin + x + sSize / 2, gridSize + y + sSize / 2);
+    line(margin + x - sSize / 2, gridSize + y + sSize / 2, margin + x + sSize / 2, gridSize + y - sSize / 2);
   }
   noFill();
 }
@@ -387,14 +409,14 @@ void drawGrid() {
 void cellArea() {
   for (int i = 0; i < col; i++) {
     for (int j = 0; j < row; j++) {
-      float cellX = (i * minWidth) / col;
-      float cellY = (j * minWidth) / row;
-      if (mouseX > margin + cellX &&
-          mouseX < margin + cellX + cellX / i &&
-          mouseY > margin + cellY &&
-          mouseY < margin + cellY + cellY / j) {
+      //float cellX = (i * minWidth) / col;
+      //float cellY = (j * minWidth) / row;
+      if (mouseX > margin + (i * minWidth) / col &&
+          mouseX < margin + ((i + 1) * minWidth) / col &&
+          mouseY > gridSize + (j * minWidth) / row &&
+          mouseY < gridSize + ((j + 1) * minWidth) / row) {
         if (newGrid[i][j] == 0) {
-          newGrid[i][j] = pow(2, 1 - turn);
+          newGrid[i][j] = turn + 1;
           turn = 1 - turn;
         }
       }
