@@ -10,7 +10,7 @@ int turn = 1;
 int num = 0;
 boolean checker = true;
 boolean delayTime = false;
-String result = "";
+int result = 0;
 float minWidth;
 float gridSize;
 float margin;
@@ -23,202 +23,47 @@ void setup() {
 void draw() {
   background(#00BFA5);
   fill(255);
+  rect(0, 0, width, 100);
+  rect(0, height, width, -50);
+  fill(255);
   //rect(20, 20, width-40, 50);
   noFill();
   strokeWeight(8);
   strokeCap(PROJECT);
   stroke(#00796B);
   
-  minWidth = min(width-40,height-40);
+  minWidth = min(width - 40 ,height - 40 - 150);
   
-  gridSize = (height - minWidth) / 2;
+  gridSize = (100 + 20);
   margin = (width-minWidth)/2;
   
   if (checker) {
-    //line(100 + (width - 300) / 2, (height - 300) / 2 + 10, 100 + (width - 300) / 2, 300 + (height - 300) / 2 - 10);
-    //line(200 + (width - 300) / 2, (height - 300) / 2 + 10, 200 + (width - 300) / 2, 300 + (height - 300) / 2 - 10);
-    //line((width - 300) / 2 + 10, 100 + (height - 300) / 2, 300 + (width - 300) / 2 - 10, 100 + (height - 300) / 2);
-    //line((width - 300) / 2 + 10, 200 + (height - 300) / 2, 300 + (width - 300) / 2 - 10, 200 + (height - 300) / 2);
-    // vert
-    //line(margin+minWidth / col, gridSize + 8, margin+minWidth / col, gridSize + minWidth - 8);
-    //line(2 * minWidth / col + margin, gridSize + 8, 2 * minWidth / col + margin, gridSize + minWidth - 8);
-    // horiz
-    //line(margin+8, minWidth/row+gridSize, margin+minWidth-8, minWidth/row+gridSize);
-    //line(margin+8, 2*minWidth/row+gridSize, margin+minWidth-8, 2*minWidth/row+gridSize);
-    
-    // vert
-//    for (int i = 1; i < col; i++) {
-//      line((i * minWidth) / col + margin, gridSize + 8, (i * minWidth) / col + margin, gridSize + minWidth - 8);
-//    }
-    
-    // horiz
-//    for (int i = 1; i < row; i++) {
-//      line(margin + 8, (i * minWidth) / row + gridSize, margin + minWidth - 8, (i * minWidth) / row + gridSize);
-//    }
-    
     drawGrid();
+    strokeWeight(8);
   }
   
   padLeft = (width-300)/2; 
   padTop = (height-300)/2;
-  
-  //println(en);
-  //println(type);
-  //println("turn: " + turn);
-  //println("num: " + num);
-  //println(checker);
-  //println(newGrid[0][0]==0);
 
   if (checker) {
-    int n = 0;
-    //fill(0);
     for (int i = 0; i < col; i++) {
       for (int j = 0; j < row; j++) {
-        //symbol(padLeft+50+100*j, padTop+50+100*i, en[n], type[n]);
         symbol((minWidth * (2 * i + 1)) / ( 2 * col),
             (minWidth * (2 * j + 1)) / ( 2 * row),
             newGrid[i][j]);
-        n++;
       }
     }
   }
-  if (delayTime) {
-//    fill(#455A64);
-//    textSize(50);
-//    text(result, width/2+2, height/2+2);
-//    fill(255);
-//    text(result, width/2, height/2);
-//    noFill();
-    if (result == "X\nWINNER!") {
-      strokeWeight(19.2);
-      strokeCap(PROJECT);
-      stroke(#424242);
-      line(width/2-60,padTop+19.2+20,width/2+60,padTop+120+19.2+20);
-      line(width/2-60,padTop+120+19.2+20,width/2+60,padTop+19.2+20);
-      fill(#00796B);
-      textAlign(CENTER, BOTTOM);
-      textSize(60);
-      text(result.substring(2, result.length()), width/2+2, padTop+300+2-20);
-      fill(255);
-      text(result.substring(2, result.length()), width/2, padTop+300-20);
-      noFill();
-    } else if (result == "O\nWINNER!") {
-      strokeWeight(19.2);
-      strokeCap(PROJECT);
-      stroke(#FFF8E1);
-      ellipse(width/2, padTop+60+19.2+20, 120, 120);
-      fill(#00796B);
-      textAlign(CENTER, BOTTOM);
-      textSize(60);
-      text(result.substring(2, result.length()), width/2+2, padTop+300+2-20);
-      fill(255);
-      text(result.substring(2, result.length()), width/2, padTop+300-20);
-      noFill();
-    } else {
-      strokeWeight(19.2);
-      strokeCap(PROJECT);
-      stroke(#424242);
-      line(width/2-120-15,padTop+19.2+20,width/2-15,padTop+120+19.2+20);
-      line(width/2-120-15,padTop+120+19.2+20,width/2-15,padTop+19.2+20);
-      stroke(#FFF8E1);
-      ellipse(width/2+19.2+15+60, padTop+60+19.2+20, 120, 120);
-      fill(#00796B);
-      textAlign(CENTER, BOTTOM);
-      textSize(60);
-      text(result.substring(4, result.length()), width/2+2, padTop+300+2-20);
-      fill(255);
-      text(result.substring(4, result.length()), width/2, padTop+300-20);
-      noFill();
-    }
-    delay(500);
-  }
+  
+  showResult();
+  
   textSize(10.5);
   
   fill(255);
   textSize(30);
-  for (int i = 0; i < 3; i++) {
-    // horiz
-    if (en[i*3] == 1 && en[i*3 + 1] == 1 && en[i*3 + 2] == 1) {
-      if (type[i*3] == 1 && type[i*3 + 1] == 1 && type[i*3 + 2] == 1) {
-        result = "X\nWINNER!";
-        //text("X WINNER!", width/2, height/2);
-        checker = false;
-        //delay(1000);
-        delayTime = true;
-      }
-      if (type[i*3] == 0 && type[i*3 + 1] == 0 && type[i*3 + 2] == 0) {
-        result = "O\nWINNER!";
-        //text("O WINNER!", width/2, height/2);
-        checker = false;
-        //delay(1000);
-        delayTime = true;
-      }
-    }
-  }
-  for (int i = 0; i < 3; i++) {
-    // vert
-    if (en[i] == 1 && en[i + 3] == 1 && en[i + 6] == 1) {
-      if (type[i] == 1 && type[i + 3] == 1 && type[i + 6] == 1) {
-        result = "X\nWINNER!";
-        //text("X Win!", width/2, height/2);
-        checker = false;
-        //delay(1000);
-        //text("X WINNER!", width/2, height/2);
-        delayTime = true;
-      }
-      if (type[i] == 0 && type[i + 3] == 0 && type[i + 6] == 0) {
-        result = "O\nWINNER!";
-        //text("O Win!", width/2, height/2);
-        checker = false;
-        //delay(1000);
-        //text("O WINNER!", width/2, height/2);
-        delayTime = true;
-      }
-    }
-  }
-  if (en[0] == 1 && en[4] == 1 && en[8] == 1) {
-    if (type[0] == 1 && type[4] == 1 && type[8] == 1) {
-      result = "X\nWINNER!";
-      //text("X Win!", width/2, height/2);
-      checker = false;
-      //delay(1000);
-      //text("X WINNER!", width/2, height/2);
-      delayTime = true;
-    }
-    if (type[0] == 0 && type[4] == 0 && type[8] == 0) {
-      result = "O\nWINNER!";
-      //text("O Win!", width/2, height/2);
-      checker = false;
-      //delay(1000);
-      //text("O WINNER!", width/2, height/2);
-      delayTime = true;
-    }
-  }
-  if (en[2] == 1 && en[4] == 1 && en[6] == 1) {
-    if (type[2] == 1 && type[4] == 1 && type[6] == 1) {
-      result = "X\nWINNER!";
-      //text("X Win!", width/2, height/2);
-      checker = false;
-      //delay(1000);
-      //text("X WINNER!", width/2, height/2);
-      delayTime = true;
-    }
-    if (type[2] == 0 && type[4] == 0 && type[6] == 0) {
-      result = "O\nWINNER!";
-      //text("O Win!", width/2, height/2);
-      checker = false;
-      //delay(1000);
-      //text("O WINNER!", width/2, height/2);
-      delayTime = true;
-    }
-  }
-  if (sum(en) == 9 && checker) {
-    result = "X O\nDRAW!";
-    checker = false;
-    delayTime = true;
-    //println(sum(en));
-  }
-  //println(sum(en));
+  
+  duplicateChecker();
+  
   fill(255);
   textAlign(CENTER, BOTTOM);
   textSize(16);
@@ -243,82 +88,6 @@ void mousePressed() {
   if (mouseButton == LEFT) {
     if (checker) {
       cellArea();
-      //if (mouseX > padLeft && mouseX < 300 + padLeft && mouseY > padTop && mouseY < 300 + padTop) {
-      //  if (mouseX > padLeft && mouseX < 100 + padLeft) {
-      //    if (mouseY > padTop && mouseY < 100+padTop) {
-      //      if (en[0] == 0) {
-      //        en[0] = 1;
-      //        type[0] = turn;
-      //        turn = 1-turn;
-      //      }
-      //      //symbol(padLeft+50, padTop+50, en[0]);
-      //    } else if (mouseY > padTop+100 && mouseY < padTop+200) {
-      //      if (en[3] == 0) {
-      //        en[3] = 1;
-      //        type[3] = turn;
-      //        turn = 1-turn;
-      //      }
-      //      //symbol(padLeft+50, padTop+50+100, en[3]);
-      //    } else if (mouseY > padTop+200 && mouseY < padTop+300) {
-      //      if (en[6] == 0) {
-      //        en[6] = 1;
-      //        type[6] = turn;
-      //        turn = 1-turn;
-      //      }
-      //      //symbol(padLeft+50, padTop+50+200, en[6]);
-      //    }
-      //  } else if (mouseX > padLeft+100 && mouseX < padLeft+200) {
-      //    if (mouseY > padTop && mouseY < 100+padTop) {
-      //      if (en[1] == 0) {
-      //        en[1] = 1;
-      //        type[1] = turn;
-      //        turn = 1-turn;
-      //      }
-      //      //symbol(padLeft+50+100, padTop+50, en[1]);
-      //    } else if (mouseY > padTop+100 && mouseY < padTop+200) {
-      //      if (en[4] == 0) {
-      //        en[4] = 1;
-      //        type[4] = turn;
-      //        turn = 1-turn;
-      //      }
-      //      //symbol(padLeft+50+100, padTop+50+100, en[4]);
-      //    } else if (mouseY > padTop+200 && mouseY < padTop+300) {
-      //      if (en[7] == 0) {
-      //        en[7] = 1;
-      //        type[7] = turn;
-      //        turn = 1-turn;
-      //      }
-      //      //symbol(padLeft+50+100, padTop+50+200, en[7]);
-      //    }
-      //  } else if (mouseX > padLeft+200 && mouseX < padLeft+300) {
-      //    if (mouseY > padTop && mouseY < 100+padTop) {
-      //      if (en[2] == 0) {
-      //        en[2] = 1;
-      //        type[2] = turn;
-      //        turn = 1-turn;
-      //      }
-      //      //symbol(padLeft+50+200, padTop+50, en[2]);
-      //    } else if (mouseY > padTop+100 && mouseY < padTop+200) {
-      //      if (en[5] == 0) {
-      //        en[5] = 1;
-      //        type[5] = turn;
-      //        turn = 1-turn;
-      //      }
-      //      //symbol(padLeft+50+200, padTop+50+100, en[5]);
-      //    } else if (mouseY > padTop+200 && mouseY < padTop+300) {
-      //      if (en[8] != 1) {
-      //        en[8] = 1;
-      //        type[8] = turn;
-      //        turn = 1-turn;
-      //      }
-      //       //symbol(padLeft+50+200, padTop+50+200, en[8]);
-      //    }
-      //  }
-      //  //if (num < 9) {
-      //  //  turn = 1-turn;
-      //  //}
-      //  num++;
-      //}
     } else {
       if (mouseX > padLeft && mouseX < padLeft + 300 &&
           mouseY > padTop && mouseY < padTop + 300) {
@@ -336,13 +105,12 @@ void mousePressed() {
         mouseX < width/2-((textWidth(str))/2+10)+textWidth(str)+20 &&
         mouseY > (height-300)/2+320 &&
         mouseY < (height-300)/2+320 + 30) {
-          en = new int[9];
-          type = new int[9];
+          newGrid = new int[col][row];
           num = 0;
           turn = 1;
           checker = true;
           delayTime = false;
-          result = "";
+          result = 0;
     }
   }
 }
@@ -395,6 +163,7 @@ int sum(int[] num) {
 }
 
 void drawGrid() {
+  strokeWeight((2 * minWidth) / (25 * col));
   // vertical grid line
   for (int i = 1; i < col; i++) {
     line((i * minWidth) / col + margin, gridSize + 8, (i * minWidth) / col + margin, gridSize + minWidth - 8);
@@ -421,5 +190,171 @@ void cellArea() {
         }
       }
     }
+  }
+}
+
+boolean duplicate(int[] num) {
+  boolean res = true;
+  for (int i : num) {
+    if (i != num[0]) {
+      res = false;
+      break;
+    }
+  }
+  return res;
+}
+
+boolean full() {
+  int[] zero = new int[col * col];
+  int n = 0;
+  for (int i = 0; i < col; i++) {
+    for (int j = 0; j < col; j++) {
+      if (newGrid[i][j] != 0) {
+        zero[n] = 1;
+      }
+      n++;
+    }
+  }
+  return (sum(zero) == col * col);
+}
+
+void duplicateChecker() {
+  int[] identity = new int[col];
+  if (checker) {
+    for (int i = 0; i < col; i++) {
+      for (int j = 0; j < col; j++) {
+        identity[j] = newGrid[i][j];
+      }
+      if (duplicate(identity)) {
+        if (sum(identity) == col) {
+          result = 1;
+          checker = false;
+          delayTime = true;
+          identity = new int[col];
+          break;
+        } else if (sum(identity) == 2 * col) {
+          result = 2;
+          checker = false;
+          delayTime = true;
+          identity = new int[col];
+          break;
+        }
+      }
+    }
+  }
+  
+  if (checker) {  
+    for (int i = 0; i < col; i ++) {
+      for (int j = 0; j < col; j++) {
+        identity[j] = newGrid[j][i];
+      }
+      if (duplicate(identity)) {
+        if (sum(identity) == col) {
+          result = 1;
+          checker = false;
+          delayTime = true;
+          identity = new int[col];
+          break;
+        } else if (sum(identity) == 2 * col) {
+          result = 2;
+          checker = false;
+          delayTime = true;
+          identity = new int[col];
+          break;
+        }
+      }
+    }
+  }
+  
+  if (checker) {  
+    for (int i = 0; i < col; i++) {
+      identity[i] = newGrid[i][i];
+    }
+    if (duplicate(identity)) {
+      if (sum(identity) == col) {
+        result = 1;
+        checker = false;
+        delayTime = true;
+        identity = new int[col];
+      } else if (sum(identity) == 2 * col) {
+        result = 2;
+        checker = false;
+        delayTime = true;
+        identity = new int[col];
+      }
+    }
+  }
+  
+  if (checker) {
+    for (int i = 0; i < col; i++) {
+      identity[i] = newGrid[col - i - 1][i];
+    }
+    if (duplicate(identity)) {
+      if (sum(identity) == col) {
+        result = 1;
+        checker = false;
+        delayTime = true;
+        identity = new int[col];
+      } else if (sum(identity) == 2 * col) {
+        result = 2;
+        checker = false;
+        delayTime = true;
+        identity = new int[col];
+      }
+    }
+  }
+  
+  if (checker && full()) {
+    result = 0;
+    checker = false;
+    delayTime = true;
+    identity = new int[col];
+  }
+}
+
+void showResult() {
+  if (delayTime) {
+    if (result == 2) {
+      strokeWeight(19.2);
+      strokeCap(PROJECT);
+      stroke(#424242);
+      line(width/2-60,padTop+19.2+20,width/2+60,padTop+120+19.2+20);
+      line(width/2-60,padTop+120+19.2+20,width/2+60,padTop+19.2+20);
+      fill(#00796B);
+      textAlign(CENTER, BOTTOM);
+      textSize(60);
+      text("WINNER!", width/2+2, padTop+300+2-20);
+      fill(255);
+      text("WINNER!", width/2, padTop+300-20);
+      noFill();
+    } else if (result == 1) {
+      strokeWeight(19.2);
+      strokeCap(PROJECT);
+      stroke(#FFF8E1);
+      ellipse(width/2, padTop+60+19.2+20, 120, 120);
+      fill(#00796B);
+      textAlign(CENTER, BOTTOM);
+      textSize(60);
+      text("WINNER!", width/2+2, padTop+300+2-20);
+      fill(255);
+      text("WINNER!", width/2, padTop+300-20);
+      noFill();
+    } else {
+      strokeWeight(19.2);
+      strokeCap(PROJECT);
+      stroke(#424242);
+      line(width/2-120-15,padTop+19.2+20,width/2-15,padTop+120+19.2+20);
+      line(width/2-120-15,padTop+120+19.2+20,width/2-15,padTop+19.2+20);
+      stroke(#FFF8E1);
+      ellipse(width/2+19.2+15+60, padTop+60+19.2+20, 120, 120);
+      fill(#00796B);
+      textAlign(CENTER, BOTTOM);
+      textSize(60);
+      text("DRAW!", width/2+2, padTop+300+2-20);
+      fill(255);
+      text("DRAW!", width/2, padTop+300-20);
+      noFill();
+    }
+    delay(500);
   }
 }
