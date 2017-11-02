@@ -1,7 +1,7 @@
 int value = 0;
 int[] en = new int[9];
 int[] type = new int[9];
-int col = 4;
+int col = 3;
 int row = 3;
 int[][] newGrid = new int[col][row];
 float padLeft = 0;
@@ -39,11 +39,21 @@ void draw() {
 //    line((width - 300) / 2 + 10, 100 + (height - 300) / 2, 300 + (width - 300) / 2 - 10, 100 + (height - 300) / 2);
 //    line((width - 300) / 2 + 10, 200 + (height - 300) / 2, 300 + (width - 300) / 2 - 10, 200 + (height - 300) / 2);
     // vert
-    line(margin+minWidth / col, gridSize + 8, margin+minWidth / col, gridSize + minWidth - 8);
-    line(2 * minWidth / col + margin, gridSize + 8, 2 * minWidth / col + margin, gridSize + minWidth - 8);
+//    line(margin+minWidth / col, gridSize + 8, margin+minWidth / col, gridSize + minWidth - 8);
+//    line(2 * minWidth / col + margin, gridSize + 8, 2 * minWidth / col + margin, gridSize + minWidth - 8);
     // horiz
-    line(margin+8, minWidth/row+gridSize, margin+minWidth-8, minWidth/row+gridSize);
-    line(margin+8, 2*minWidth/row+gridSize, margin+minWidth-8, 2*minWidth/row+gridSize);
+//    line(margin+8, minWidth/row+gridSize, margin+minWidth-8, minWidth/row+gridSize);
+//    line(margin+8, 2*minWidth/row+gridSize, margin+minWidth-8, 2*minWidth/row+gridSize);
+    
+    // vert
+    for (int i = 1; i < col; i++) {
+      line((i * minWidth) / col + margin, gridSize + 8, (i * minWidth) / col + margin, gridSize + minWidth - 8);
+    }
+    
+    // horiz
+    for (int i = 1; i < row; i++) {
+      line(margin + 8, (i * minWidth) / row + gridSize, margin + minWidth - 8, (i * minWidth) / row + gridSize);
+    }
   }
   
   padLeft = (width-300)/2; 
