@@ -12,7 +12,8 @@ boolean checker = true;
 boolean delayTime = false;
 String result = "";
 float minWidth;
-
+float gridSize;
+float margin;
 
 void setup() {
   fullScreen();
@@ -30,8 +31,8 @@ void draw() {
   
   minWidth = min(width-40,height-40);
   
-  float gridSize = (height - minWidth) / 2;
-  float margin = (width-minWidth)/2;
+  gridSize = (height - minWidth) / 2;
+  margin = (width-minWidth)/2;
   
   if (checker) {
 //    line(100 + (width - 300) / 2, (height - 300) / 2 + 10, 100 + (width - 300) / 2, 300 + (height - 300) / 2 - 10);
@@ -46,14 +47,16 @@ void draw() {
 //    line(margin+8, 2*minWidth/row+gridSize, margin+minWidth-8, 2*minWidth/row+gridSize);
     
     // vert
-    for (int i = 1; i < col; i++) {
-      line((i * minWidth) / col + margin, gridSize + 8, (i * minWidth) / col + margin, gridSize + minWidth - 8);
-    }
+//    for (int i = 1; i < col; i++) {
+//      line((i * minWidth) / col + margin, gridSize + 8, (i * minWidth) / col + margin, gridSize + minWidth - 8);
+//    }
     
     // horiz
-    for (int i = 1; i < row; i++) {
-      line(margin + 8, (i * minWidth) / row + gridSize, margin + minWidth - 8, (i * minWidth) / row + gridSize);
-    }
+//    for (int i = 1; i < row; i++) {
+//      line(margin + 8, (i * minWidth) / row + gridSize, margin + minWidth - 8, (i * minWidth) / row + gridSize);
+//    }
+
+    drawGrid();
   }
   
   padLeft = (width-300)/2; 
@@ -367,4 +370,16 @@ int sum(int[] num) {
     res += i;
   }
   return res;
+}
+
+void drawGrid() {
+  // vertical grid line
+  for (int i = 1; i < col; i++) {
+    line((i * minWidth) / col + margin, gridSize + 8, (i * minWidth) / col + margin, gridSize + minWidth - 8);
+  }
+  
+  // horizontal grid line
+  for (int i = 1; i < row; i++) {
+    line(margin + 8, (i * minWidth) / row + gridSize, margin + minWidth - 8, (i * minWidth) / row + gridSize);
+  }
 }
