@@ -383,3 +383,21 @@ void drawGrid() {
     line(margin + 8, (i * minWidth) / row + gridSize, margin + minWidth - 8, (i * minWidth) / row + gridSize);
   }
 }
+
+void cellArea() {
+  for (int i = 0; i < col; i++) {
+    for (int j = 0; j < row; j++) {
+      float cellX = (i * minWidth) / col;
+      float cellY = (j * minWidth) / row;
+      if (mouseX > margin + cellX &&
+          mouseX < margin + cellX + cellX / i &&
+          mouseY > margin + cellY &&
+          mouseY < margin + cellY + cellY / j) {
+        if (newGrid[i][j] == 0) {
+          newGrid[i][j] = pow(2, 1 - turn);
+          turn = 1 - turn;
+        }
+      }
+    }
+  }
+}
