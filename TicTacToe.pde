@@ -1,24 +1,15 @@
-int value = 0;
-int[] en = new int[9];
-int[] type = new int[9];
 int col = 3;
-int row = 3;
-int[][] newGrid = new int[col][row];
-float padLeft = 0;
-float padTop = 0;
+int[][] newGrid = new int[col][col];
 int turn = 1;
-int num = 0;
 boolean checker = true;
 boolean delayTime = false;
 int result = 0;
 float minWidth;
-float gridSize;
-float margin;
+float paddingTop, paddingLeft;
 int scoreX = 0, scoreY = 0;
 boolean carry = false;
 
 void setup() {
-  //fullScreen();
   size(500, 500);
 }
 
@@ -26,196 +17,161 @@ void draw() {
   background(#00BFA5);
   fill(#ECEFF1);
   rect(0, 0, width, 100);
-  //rect(0, height, width, -50);
-  fill(255);
-  //rect(20, 20, width-40, 50);
-  noFill();
-  strokeWeight(8);
+  
   strokeCap(PROJECT);
   stroke(#00796B);
   
-  minWidth = min(width - 40 ,height - 40 - 150);
+  minWidth = min(width - 40 ,height - 190);
   
-  gridSize = (100 + 20);
-  margin = (width-minWidth)/2;
+  paddingTop = 120;
+  paddingLeft = (width - minWidth) / 2;
+  
+  noFill();
   
   if (checker) {
     drawGrid();
-    strokeWeight(8);
-  }
-  
-  padLeft = (width-300)/2; 
-  padTop = (height-300)/2;
-
-  if (checker) {
+    
     for (int i = 0; i < col; i++) {
-      for (int j = 0; j < row; j++) {
+      for (int j = 0; j < col; j++) {
         symbol((minWidth * (2 * i + 1)) / ( 2 * col),
-            (minWidth * (2 * j + 1)) / ( 2 * row),
+            (minWidth * (2 * j + 1)) / ( 2 * col),
             newGrid[i][j]);
       }
     }
   }
   
   showResult();
+  duplicateChecker();
   
-  textSize(10.5);
-  
-  fill(255);
+  noStroke();
   textSize(30);
   
-  duplicateChecker();
-  noStroke();
-  fill(#00796B);
-  //rect(10, 20, 150, 60, 30);
-  //rect(width - 160, 20, 150, 60, 30);
+  if (turn == 1) {
+    fill(#00796B);
+    rect(15, 28, 150, 50, 35);
+    fill(#ECEFF1);
+    rect(width - 165, 28, 150, 50, 35);
+  } else if (turn == 0) {
+    fill(#ECEFF1);
+    rect(15, 28, 150, 50, 35);
+    fill(#00796B);
+    rect(width - 165, 28, 150, 50, 35);
+  }
+  
   fill(255);
   rect(15, 25, 150, 50, 35);
   rect(width - 165, 25, 150, 50, 35);
   symbol(45, 50, 20, 2, #424242);
-  symbol(width - 165 + 35, 50, 20, 1, #424242);
+  symbol(width - 135, 50, 20, 1, #424242);
+  fill(0);
+  textAlign(RIGHT, CENTER);
+  text(scoreX, 145, 45);
+  text(scoreY, width - 35, 45);
   
   fill(255);
   textAlign(CENTER, BOTTOM);
   textSize(16);
-  //textWeight()
-  //text("Tic-Tac-Toe", width/2, (height-300)/2-20);
-  noFill();
   
+  noFill();
   noStroke();
-  //strokeWeight(1);
+  
   String str = "NEW GAME";
+  
   fill(#00796B);
-  rect(width/2-((textWidth(str))/2 + 10) + 3, (height-50)+25-15+3, textWidth(str)+20, 30, 3);
-  if (mousePressed &&
-      mouseX > width/2-((textWidth(str))/2+10) && 
-      mouseX < width/2-((textWidth(str))/2+10)+textWidth(str)+20 &&
-      mouseY > (height-50)+25-15 &&
-      mouseY < (height-50)+25-15 + 30) {
-    fill(255);
-    rect(width/2-((textWidth(str))/2 + 10) + 3, (height-50)+25-15+3, textWidth(str)+20, 30, 3);
-    fill(0);
-    textAlign(CENTER, CENTER);
-    text(str, width/2 + 3, (height-50)+25 + 3);
-    noFill();
-    newGrid = new int[col][row];
-    num = 0;
-    turn = 1;
-    checker = true;
-    delayTime = false;
-    result = 0;
-  }  else {
-    fill(255);
-    rect(width/2-((textWidth(str))/2 + 10), (height-50)+25-15, textWidth(str)+20, 30, 3);
-    fill(0);
-    textAlign(CENTER, CENTER);
-    text(str, width/2, (height-50)+25);
-    noFill();
-  }
-  //fill(255);
-  //rect(width/2-((textWidth(str))/2 + 10), (height-50)+25-15, textWidth(str)+20, 30, 3);
-  //fill(0);
-  //textAlign(CENTER, CENTER);
-  //text(str, width/2, (height-50)+25);
-  //noFill(); //<>//
+  rect((width - textWidth(str)) / 2 - 7, height - 47, textWidth(str) + 20, 30, 3);
+  fill(255);
+  rect((width - textWidth(str)) / 2 - 10, height - 50, textWidth(str) + 20, 30, 3);
+  fill(0);
+  textAlign(CENTER, CENTER);
+  text(str, width / 2, height - 35);
+  noFill(); //<>//
 }
 
 void mousePressed() {
   if (mouseButton == LEFT) {
     if (checker) {
       cellArea();
-    } else {
-      if (mouseX > padLeft && mouseX < padLeft + 300 &&
-          mouseY > padTop && mouseY < padTop + 300) {
-        //en = new int[9];
-        //type = new int[9];
-        //num = 0;
-        //turn = 1;
-        //checker = true;
-        //delayTime = false;
-        //result = "";
-      }
     }
+    
     String str = "NEW GAME";
-    if (mouseX > width/2-((textWidth(str))/2+10) && 
-        mouseX < width/2-((textWidth(str))/2+10)+textWidth(str)+20 &&
-        mouseY > (height-50)+25-15 &&
-        mouseY < (height-50)+25-15 + 30) {
-          newGrid = new int[col][row];
-          num = 0;
-          turn = 1;
+    
+    if (mouseX > (width - textWidth(str)) / 2 - 10 && 
+        mouseX < (width + textWidth(str)) / 2 + 10 &&
+        mouseY > height - 50 &&
+        mouseY < height - 20) {
+          newGrid = new int[col][col];
           checker = true;
           delayTime = false;
           result = 0;
     }
+    if (mouseX > width - 165 &&
+        mouseX < width - 165 + 150 &&
+        mouseY > 25 && mouseY < 75 &&
+        turn == 1 && empty()) {
+      turn = 0;
+    }
+    if (mouseX > 15 &&
+        mouseX < 15 + 150 &&
+        mouseY > 25 && mouseY < 75 &&
+        turn == 0 && empty()) {
+      turn = 1;
+    }
   }
 }
 
-void symbol(float x, float y, float size, int type, int colour) {
+void symbol(float xPos, float yPos, float size, int type, int colour) {
   strokeWeight((8 * size) / 50);
   strokeCap(PROJECT);
   if (type == 1) {
-    //stroke(#FFF8E1);
     stroke(colour);
-    ellipse(x, y, size + (8 * size) / 25, size + (8 * size) / 25);
+    ellipse(xPos, yPos, size + (8 * size) / 50, size + (8 * size) / 50);
   } else if (type == 2) {
-    fill(0);
-    //stroke(#424242);
     stroke(colour);
-    line(x - size / 2, y - size / 2, x + size / 2, y + size / 2);
-    line(x - size / 2, y + size / 2, x + size / 2, y - size / 2);
+    line(xPos - size / 2, yPos - size / 2, xPos + size / 2, yPos + size / 2);
+    line(xPos - size / 2, yPos + size / 2, xPos + size / 2, yPos - size / 2);
   }
   noFill();
 }
 
-void symbol(float x, float y, int type) {
-  float sSize = minWidth / (col * 2);
+void symbol(float xPos, float yPos, int type) {
+  float size = minWidth / (col * 2);
+  strokeWeight((2 * minWidth) / (25 * col));
+  strokeCap(PROJECT);
   if (type == 1) {
-    strokeWeight((2 * minWidth) / (25 * col));
-    strokeCap(PROJECT);
     stroke(#FFF8E1);
-    ellipse(margin + x, gridSize + y, minWidth / (col * 2), minWidth / (col * 2));
+    ellipse(paddingLeft + xPos, paddingTop + yPos, minWidth / (col * 2), minWidth / (col * 2));
   } else if (type == 2) {
-    fill(0);
-    strokeWeight((2 * minWidth) / (25 * col));
-    strokeCap(PROJECT);
     stroke(#424242);
-    line(margin + x - sSize / 2, gridSize + y - sSize / 2, margin + x + sSize / 2, gridSize + y + sSize / 2);
-    line(margin + x - sSize / 2, gridSize + y + sSize / 2, margin + x + sSize / 2, gridSize + y - sSize / 2);
+    line(paddingLeft + xPos - size / 2, paddingTop + yPos - size / 2, 
+        paddingLeft + xPos + size / 2, paddingTop + yPos + size / 2);
+    line(paddingLeft + xPos - size / 2, paddingTop + yPos + size / 2, 
+        paddingLeft + xPos + size / 2, paddingTop + yPos - size / 2);
   }
-  noFill();
-}
-
-int sum(int[] num) {
-  int res = 0;
-  for (int i : num) {
-    res += i;
-  }
-  return res;
 }
 
 void drawGrid() {
   strokeWeight((2 * minWidth) / (25 * col));
+  
   // vertical grid line
   for (int i = 1; i < col; i++) {
-    line((i * minWidth) / col + margin, gridSize + 8, (i * minWidth) / col + margin, gridSize + minWidth - 8);
+    line((i * minWidth) / col + paddingLeft, paddingTop + (2 * minWidth) / (25 * col), 
+        (i * minWidth) / col + paddingLeft, paddingTop + minWidth - (2 * minWidth) / (25 * col));
   }
   
   // horizontal grid line
-  for (int i = 1; i < row; i++) {
-    line(margin + 8, (i * minWidth) / row + gridSize, margin + minWidth - 8, (i * minWidth) / row + gridSize);
+  for (int i = 1; i < col; i++) {
+    line(paddingLeft + (2 * minWidth) / (25 * col), (i * minWidth) / col + paddingTop, 
+        paddingLeft + minWidth - (2 * minWidth) / (25 * col), (i * minWidth) / col + paddingTop);
   }
 }
 
 void cellArea() {
   for (int i = 0; i < col; i++) {
-    for (int j = 0; j < row; j++) {
-      //float cellX = (i * minWidth) / col;
-      //float cellY = (j * minWidth) / row;
-      if (mouseX > margin + (i * minWidth) / col &&
-          mouseX < margin + ((i + 1) * minWidth) / col &&
-          mouseY > gridSize + (j * minWidth) / row &&
-          mouseY < gridSize + ((j + 1) * minWidth) / row) {
+    for (int j = 0; j < col; j++) {
+      if (mouseX > paddingLeft + (i * minWidth) / col &&
+          mouseX < paddingLeft + ((i + 1) * minWidth) / col &&
+          mouseY > paddingTop + (j * minWidth) / col &&
+          mouseY < paddingTop + ((j + 1) * minWidth) / col) {
         if (newGrid[i][j] == 0) {
           newGrid[i][j] = turn + 1;
           turn = 1 - turn;
@@ -223,31 +179,6 @@ void cellArea() {
       }
     }
   }
-}
-
-boolean duplicate(int[] num) {
-  boolean res = true;
-  for (int i : num) {
-    if (i != num[0]) {
-      res = false;
-      break;
-    }
-  }
-  return res;
-}
-
-boolean full() {
-  int[] zero = new int[col * col];
-  int n = 0;
-  for (int i = 0; i < col; i++) {
-    for (int j = 0; j < col; j++) {
-      if (newGrid[i][j] != 0) {
-        zero[n] = 1;
-      }
-      n++;
-    }
-  }
-  return (sum(zero) == col * col);
 }
 
 void duplicateChecker() {
@@ -356,68 +287,89 @@ void duplicateChecker() {
 void showResult() {
   if (delayTime) {
     if (result == 2) {
-      strokeWeight(19.2);
-      strokeCap(PROJECT);
-      stroke(#424242);
-      line(width/2-60,padTop+19.2+20,width/2+60,padTop+120+19.2+20);
-      line(width/2-60,padTop+120+19.2+20,width/2+60,padTop+19.2+20);
+      symbol(width / 2, minWidth /2 + 80, 120, 2, #424242);
       fill(#00796B);
-      textAlign(CENTER, BOTTOM);
+      textAlign(CENTER, TOP);
       textSize(60);
-      text("WINNER!", width/2+2, padTop+300+2-20);
+      text("WINNER!", width / 2 + 2, minWidth / 2 + 160 );
       fill(255);
-      text("WINNER!", width/2, padTop+300-20);
+      text("WINNER!", width / 2, minWidth / 2 + 160);
       noFill();
       if (carry) {
         scoreX++;
         carry = false;
       }
     } else if (result == 1) {
-      strokeWeight(19.2);
-      strokeCap(PROJECT);
-      stroke(#FFF8E1);
-      ellipse(width/2, padTop+60+19.2+20, 120, 120);
+      symbol(width / 2, minWidth / 2 + 80, 120, 1, #FFF8E1);
       fill(#00796B);
-      textAlign(CENTER, BOTTOM);
+      textAlign(CENTER, TOP);
       textSize(60);
-      text("WINNER!", width/2+2, padTop+300+2-20);
+      text("WINNER!", width / 2 + 2, minWidth / 2 + 160 );
       fill(255);
-      text("WINNER!", width/2, padTop+300-20);
+      text("WINNER!", width / 2, minWidth / 2 + 160);
       noFill();
       if (carry) {
         scoreY++;
         carry = false;
       }
     } else {
-      strokeWeight(19.2);
-      strokeCap(PROJECT);
-      stroke(#424242);
-      line(width/2-120-15,padTop+19.2+20,width/2-15,padTop+120+19.2+20);
-      line(width/2-120-15,padTop+120+19.2+20,width/2-15,padTop+19.2+20);
-      stroke(#FFF8E1);
-      ellipse(width/2+19.2+15+60, padTop+60+19.2+20, 120, 120);
+      symbol(width / 2 - 70, minWidth / 2 + 80, 120, 2, #424242);
+      symbol(width / 2 + 70, minWidth /2 + 80, 120, 1, #FFF8E1);
       fill(#00796B);
-      textAlign(CENTER, BOTTOM);
+      textAlign(CENTER, TOP);
       textSize(60);
-      text("DRAW!", width/2+2, padTop+300+2-20);
+      text("DRAW!", width / 2 + 2, minWidth / 2 + 160 );
       fill(255);
-      text("DRAW!", width/2, padTop+300-20);
+      text("DRAW!", width / 2, minWidth / 2 + 160);
       noFill();
     }
     delay(500);
   }
 }
 
-void button(String str, float xPos, float yPos, float fontSize) {
-  noStroke();
-  //strokeWeight(1);
-  fill(#00796B);
-  //String str = "NEW GAME";
-  rect(width/2-((textWidth(str))/2 + 10) + 2, (height-300)/2+320 + 2, textWidth(str)+20 + 2, 30 + 2, 3);
-  fill(255);
-  rect(width/2-((textWidth(str))/2 + 10), (height-300)/2+320, textWidth(str)+20, 30, 3);
-  fill(0);
-  textAlign(CENTER, CENTER);
-  text(str, width/2, (height-300)/2+320 + 15);
-  noFill();
+int sum(int[] num) {
+  int res = 0;
+  for (int i : num) {
+    res += i;
+  }
+  return res;
+}
+
+boolean duplicate(int[] num) {
+  boolean res = true;
+  for (int i : num) {
+    if (i != num[0]) {
+      res = false;
+      break;
+    }
+  }
+  return res;
+}
+
+boolean full() {
+  int[] zero = new int[col * col];
+  int n = 0;
+  for (int i = 0; i < col; i++) {
+    for (int j = 0; j < col; j++) {
+      if (newGrid[i][j] != 0) {
+        zero[n] = 1;
+      }
+      n++;
+    }
+  }
+  return (sum(zero) == col * col);
+}
+
+boolean empty() {
+  int[] zero = new int[col * col];
+  int n = 0;
+  for (int i = 0; i < col; i++) {
+    for (int j = 0; j < col; j++) {
+      if (newGrid[i][j] == 0) {
+        zero[n] = 1;
+      }
+      n++;
+    }
+  }
+  return (sum(zero) == col * col);
 }
