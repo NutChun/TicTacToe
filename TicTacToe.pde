@@ -14,17 +14,19 @@ int result = 0;
 float minWidth;
 float gridSize;
 float margin;
+int scoreX = 0, scoreY = 0;
+boolean carry = false;
 
 void setup() {
-  fullScreen();
-  //size(500, 500);
+  //fullScreen();
+  size(500, 500);
 }
 
 void draw() {
   background(#00BFA5);
-  fill(255);
+  fill(#ECEFF1);
   rect(0, 0, width, 100);
-  rect(0, height, width, -50);
+  //rect(0, height, width, -50);
   fill(255);
   //rect(20, 20, width-40, 50);
   noFill();
@@ -63,25 +65,59 @@ void draw() {
   textSize(30);
   
   duplicateChecker();
+  noStroke();
+  fill(#00796B);
+  //rect(10, 20, 150, 60, 30);
+  //rect(width - 160, 20, 150, 60, 30);
+  fill(255);
+  rect(15, 25, 150, 50, 35);
+  rect(width - 165, 25, 150, 50, 35);
+  symbol(45, 50, 20, 2, #424242);
+  symbol(width - 165 + 35, 50, 20, 1, #424242);
   
   fill(255);
   textAlign(CENTER, BOTTOM);
   textSize(16);
   //textWeight()
-  text("Tic-Tac-Toe", width/2, (height-300)/2-20);
+  //text("Tic-Tac-Toe", width/2, (height-300)/2-20);
   noFill();
   
   noStroke();
   //strokeWeight(1);
-  fill(#00796B);
   String str = "NEW GAME";
-  rect(width/2-((textWidth(str))/2 + 10) + 2, (height-300)/2+320 + 2, textWidth(str)+20 + 2, 30 + 2, 3);
-  fill(255);
-  rect(width/2-((textWidth(str))/2 + 10), (height-300)/2+320, textWidth(str)+20, 30, 3);
-  fill(0);
-  textAlign(CENTER, CENTER);
-  text(str, width/2, (height-300)/2+320 + 15);
-  noFill(); //<>//
+  fill(#00796B);
+  rect(width/2-((textWidth(str))/2 + 10) + 3, (height-50)+25-15+3, textWidth(str)+20, 30, 3);
+  if (mousePressed &&
+      mouseX > width/2-((textWidth(str))/2+10) && 
+      mouseX < width/2-((textWidth(str))/2+10)+textWidth(str)+20 &&
+      mouseY > (height-50)+25-15 &&
+      mouseY < (height-50)+25-15 + 30) {
+    fill(255);
+    rect(width/2-((textWidth(str))/2 + 10) + 3, (height-50)+25-15+3, textWidth(str)+20, 30, 3);
+    fill(0);
+    textAlign(CENTER, CENTER);
+    text(str, width/2 + 3, (height-50)+25 + 3);
+    noFill();
+    newGrid = new int[col][row];
+    num = 0;
+    turn = 1;
+    checker = true;
+    delayTime = false;
+    result = 0;
+  }  else {
+    fill(255);
+    rect(width/2-((textWidth(str))/2 + 10), (height-50)+25-15, textWidth(str)+20, 30, 3);
+    fill(0);
+    textAlign(CENTER, CENTER);
+    text(str, width/2, (height-50)+25);
+    noFill();
+  }
+  //fill(255);
+  //rect(width/2-((textWidth(str))/2 + 10), (height-50)+25-15, textWidth(str)+20, 30, 3);
+  //fill(0);
+  //textAlign(CENTER, CENTER);
+  //text(str, width/2, (height-50)+25);
+  //noFill(); //<>//
 }
 
 void mousePressed() {
@@ -103,8 +139,8 @@ void mousePressed() {
     String str = "NEW GAME";
     if (mouseX > width/2-((textWidth(str))/2+10) && 
         mouseX < width/2-((textWidth(str))/2+10)+textWidth(str)+20 &&
-        mouseY > (height-300)/2+320 &&
-        mouseY < (height-300)/2+320 + 30) {
+        mouseY > (height-50)+25-15 &&
+        mouseY < (height-50)+25-15 + 30) {
           newGrid = new int[col][row];
           num = 0;
           turn = 1;
@@ -115,23 +151,19 @@ void mousePressed() {
   }
 }
 
-void symbol(float x, float y, int en, int type) {
-  if (type == 0) {
-    if (en != 0) {
-      strokeWeight(8);
-      strokeCap(PROJECT);
-      stroke(#FFF8E1);
-      ellipse(x, y, 50, 50);
-    }
-  } else {
-    if (en != 0) {
-      fill(0);
-      strokeWeight(8);
-      strokeCap(PROJECT);
-      stroke(#424242);
-      line(x-25,y-25,x+25,y+25);
-      line(x-25,y+25,x+25,y-25);
-    }
+void symbol(float x, float y, float size, int type, int colour) {
+  strokeWeight((8 * size) / 50);
+  strokeCap(PROJECT);
+  if (type == 1) {
+    //stroke(#FFF8E1);
+    stroke(colour);
+    ellipse(x, y, size + (8 * size) / 25, size + (8 * size) / 25);
+  } else if (type == 2) {
+    fill(0);
+    //stroke(#424242);
+    stroke(colour);
+    line(x - size / 2, y - size / 2, x + size / 2, y + size / 2);
+    line(x - size / 2, y + size / 2, x + size / 2, y - size / 2);
   }
   noFill();
 }
@@ -231,12 +263,14 @@ void duplicateChecker() {
           checker = false;
           delayTime = true;
           identity = new int[col];
+          carry = true;
           break;
         } else if (sum(identity) == 2 * col) {
           result = 2;
           checker = false;
           delayTime = true;
           identity = new int[col];
+          carry = true;
           break;
         }
       }
@@ -254,12 +288,14 @@ void duplicateChecker() {
           checker = false;
           delayTime = true;
           identity = new int[col];
+          carry = true;
           break;
         } else if (sum(identity) == 2 * col) {
           result = 2;
           checker = false;
           delayTime = true;
           identity = new int[col];
+          carry = true;
           break;
         }
       }
@@ -276,11 +312,13 @@ void duplicateChecker() {
         checker = false;
         delayTime = true;
         identity = new int[col];
+        carry = true;
       } else if (sum(identity) == 2 * col) {
         result = 2;
         checker = false;
         delayTime = true;
         identity = new int[col];
+        carry = true;
       }
     }
   }
@@ -295,11 +333,13 @@ void duplicateChecker() {
         checker = false;
         delayTime = true;
         identity = new int[col];
+        carry = true;
       } else if (sum(identity) == 2 * col) {
         result = 2;
         checker = false;
         delayTime = true;
         identity = new int[col];
+        carry = true;
       }
     }
   }
@@ -309,6 +349,7 @@ void duplicateChecker() {
     checker = false;
     delayTime = true;
     identity = new int[col];
+    carry = true;
   }
 }
 
@@ -327,6 +368,10 @@ void showResult() {
       fill(255);
       text("WINNER!", width/2, padTop+300-20);
       noFill();
+      if (carry) {
+        scoreX++;
+        carry = false;
+      }
     } else if (result == 1) {
       strokeWeight(19.2);
       strokeCap(PROJECT);
@@ -339,6 +384,10 @@ void showResult() {
       fill(255);
       text("WINNER!", width/2, padTop+300-20);
       noFill();
+      if (carry) {
+        scoreY++;
+        carry = false;
+      }
     } else {
       strokeWeight(19.2);
       strokeCap(PROJECT);
@@ -357,4 +406,18 @@ void showResult() {
     }
     delay(500);
   }
+}
+
+void button(String str, float xPos, float yPos, float fontSize) {
+  noStroke();
+  //strokeWeight(1);
+  fill(#00796B);
+  //String str = "NEW GAME";
+  rect(width/2-((textWidth(str))/2 + 10) + 2, (height-300)/2+320 + 2, textWidth(str)+20 + 2, 30 + 2, 3);
+  fill(255);
+  rect(width/2-((textWidth(str))/2 + 10), (height-300)/2+320, textWidth(str)+20, 30, 3);
+  fill(0);
+  textAlign(CENTER, CENTER);
+  text(str, width/2, (height-300)/2+320 + 15);
+  noFill();
 }
