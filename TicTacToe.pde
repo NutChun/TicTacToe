@@ -10,7 +10,8 @@ int scoreX = 0, scoreY = 0;
 boolean carry = false;
 
 void setup() {
-  size(500, 500);
+//  size(500, 500);
+  fullScreen();
 }
 
 void draw() {
@@ -23,7 +24,7 @@ void draw() {
   
   minWidth = min(width - 40 ,height - 190);
   
-  paddingTop = 120;
+  paddingTop = (height - 150 - minWidth) / 2 + 100;
   paddingLeft = (width - minWidth) / 2;
   
   noFill();
@@ -88,7 +89,7 @@ void draw() {
 }
 
 void mousePressed() {
-  if (mouseButton == LEFT) {
+//  if (mouseButton == LEFT) {
     if (checker) {
       cellArea();
     }
@@ -116,7 +117,7 @@ void mousePressed() {
         turn == 0 && empty()) {
       turn = 1;
     }
-  }
+//  }
 }
 
 void symbol(float xPos, float yPos, float size, int type, int colour) {
@@ -291,7 +292,7 @@ void showResult() {
       fill(#00796B);
       textAlign(CENTER, TOP);
       textSize(60);
-      text("WINNER!", width / 2 + 2, minWidth / 2 + 160 );
+      text("WINNER!", width / 2 + 2, minWidth / 2 + 160);
       fill(255);
       text("WINNER!", width / 2, minWidth / 2 + 160);
       noFill();
