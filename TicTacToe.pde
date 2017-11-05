@@ -1,4 +1,5 @@
-int col = 3;
+int col = 7;
+int arrange = 7;
 int[][] newGrid = new int[col][col];
 int turn = 1;
 boolean checker = true;
@@ -183,96 +184,128 @@ void cellArea() {
 }
 
 void duplicateChecker() {
-  int[] identity = new int[col];
+  int[] identity = new int[arrange];
+  int n = 0;
+  
+  // horizontal
   if (checker) {
     for (int i = 0; i < col; i++) {
-      for (int j = 0; j < col; j++) {
-        identity[j] = newGrid[i][j];
+      for (int j = 0; j <= col - arrange; j++) {
+        for (int k = j; k < j + arrange; k++) {
+          identity[n] = newGrid[i][k];
+          n++;
+        }
+        if (duplicate(identity)) {
+          if (sum(identity) == arrange) {
+            result = 1;
+            checker = false;
+            delayTime = true;
+            identity = new int[arrange];
+            carry = true;
+            break;
+          } else if (sum(identity) == 2 * arrange) {
+            result = 2;
+            checker = false;
+            delayTime = true;
+            identity = new int[arrange];
+            carry = true;
+            break;
+          }
+        }
+        identity = new int[arrange];
+        n = 0;
+      }
+      if (!checker) {
+        break;
+      }
+    }
+  }
+  
+  // vertical
+  if (checker) {  
+    for (int i = 0; i < col; i++) {
+      for (int j = 0; j <= col - arrange; j++) {
+        for (int k = j; k < j + arrange; k++) {
+          identity[n] = newGrid[k][i];
+          n++;
+        }
+        if (duplicate(identity)) {
+          if (sum(identity) == arrange) {
+            result = 1;
+            checker = false;
+            delayTime = true;
+            identity = new int[arrange];
+            carry = true;
+            break;
+          } else if (sum(identity) == 2 * arrange) {
+            result = 2;
+            checker = false;
+            delayTime = true;
+            identity = new int[arrange];
+            carry = true;
+            break;
+          }
+        }
+        identity = new int[arrange];
+        n = 0;
+      }
+      if (!checker) {
+        break;
+      }
+    }
+  }
+  
+  // left top to right bottom diagonal
+  if (checker) {  
+    for (int i = 0; i <= col - arrange; i++) {
+      for (int j = i; j < i + arrange; j++) {
+        identity[n] = newGrid[j][j];
+        n++;
       }
       if (duplicate(identity)) {
-        if (sum(identity) == col) {
+        if (sum(identity) == arrange) {
           result = 1;
           checker = false;
           delayTime = true;
-          identity = new int[col];
+          identity = new int[arrange];
           carry = true;
-          break;
-        } else if (sum(identity) == 2 * col) {
+        } else if (sum(identity) == 2 * arrange) {
           result = 2;
           checker = false;
           delayTime = true;
-          identity = new int[col];
+          identity = new int[arrange];
           carry = true;
-          break;
         }
       }
+      identity = new int[arrange];
+      n = 0;
     }
   }
   
-  if (checker) {  
-    for (int i = 0; i < col; i ++) {
-      for (int j = 0; j < col; j++) {
-        identity[j] = newGrid[j][i];
+  // left bottom to right top diagonal
+  if (checker) {
+    for (int i = 0; i <= col - arrange; i++) {
+      for (int j = i; j < i + arrange; j++) {
+        identity[n] = newGrid[col - j - 1][j];
+        n++;
       }
       if (duplicate(identity)) {
-        if (sum(identity) == col) {
+        if (sum(identity) == arrange) {
           result = 1;
           checker = false;
           delayTime = true;
-          identity = new int[col];
+          identity = new int[arrange];
           carry = true;
-          break;
-        } else if (sum(identity) == 2 * col) {
+        } else if (sum(identity) == 2 * arrange) {
           result = 2;
           checker = false;
           delayTime = true;
-          identity = new int[col];
+          identity = new int[arrange];
           carry = true;
-          break;
         }
       }
-    }
-  }
-  
-  if (checker) {  
-    for (int i = 0; i < col; i++) {
-      identity[i] = newGrid[i][i];
-    }
-    if (duplicate(identity)) {
-      if (sum(identity) == col) {
-        result = 1;
-        checker = false;
-        delayTime = true;
-        identity = new int[col];
-        carry = true;
-      } else if (sum(identity) == 2 * col) {
-        result = 2;
-        checker = false;
-        delayTime = true;
-        identity = new int[col];
-        carry = true;
-      }
-    }
-  }
-  
-  if (checker) {
-    for (int i = 0; i < col; i++) {
-      identity[i] = newGrid[col - i - 1][i];
-    }
-    if (duplicate(identity)) {
-      if (sum(identity) == col) {
-        result = 1;
-        checker = false;
-        delayTime = true;
-        identity = new int[col];
-        carry = true;
-      } else if (sum(identity) == 2 * col) {
-        result = 2;
-        checker = false;
-        delayTime = true;
-        identity = new int[col];
-        carry = true;
-      }
+      identity = new int[arrange];
+      n = 0;
     }
   }
   
@@ -280,7 +313,7 @@ void duplicateChecker() {
     result = 0;
     checker = false;
     delayTime = true;
-    identity = new int[col];
+    identity = new int[arrange];
     carry = true;
   }
 }
