@@ -1,22 +1,20 @@
 int col = 5;
-int arrange = 4;
-int[][] newGrid = new int[col][col];
+int arrange = 5;
+int[][] board = new int[col][col];
 int turn = 1;
+int result = 0;
 boolean checker = true;
 boolean delayTime = false;
-int result = 0;
-float minWidth;
-float paddingTop, paddingLeft;
+float boardArea, marginTop, marginLeft;
 int scoreX = 0, scoreY = 0;
 boolean carry = false;
+float x = 150, y = 150;
+float easing = 0.15;
 
 void setup() {
   size(500, 500);
   //fullScreen();
   surface.setResizable(true);
-  //minWidth = min(width - 40 ,height - 190);
-  //paddingTop = (height - 150 - minWidth) / 2 + 100;
-  //paddingLeft = (width - minWidth) / 2;
 }
 
 void draw() {
@@ -27,10 +25,10 @@ void draw() {
   strokeCap(PROJECT);
   stroke(#00796B);
   
-  minWidth = abs(min(width - 40 ,height - 190));
+  boardArea = abs(min(width - 40 ,height - 190));
   
-  paddingTop = (height - 150 - minWidth) / 2 + 100;
-  paddingLeft = (width - minWidth) / 2;
+  marginTop = (height - 150 - boardArea) / 2 + 100;
+  marginLeft = (width - boardArea) / 2;
   
   noFill();
   
@@ -39,9 +37,9 @@ void draw() {
     
     for (int i = 0; i < col; i++) {
       for (int j = 0; j < col; j++) {
-        symbol((minWidth * (2 * i + 1)) / ( 2 * col),
-            (minWidth * (2 * j + 1)) / ( 2 * col),
-            newGrid[i][j]);
+        symbol((boardArea * (2 * i + 1)) / ( 2 * col),
+            (boardArea * (2 * j + 1)) / ( 2 * col),
+            board[i][j]);
       }
     }
   }
@@ -96,7 +94,7 @@ void draw() {
 void mousePressed() {
 //  if (mouseButton == LEFT) {
     if (checker) {
-      cellArea();
+      onCellArea();
     }
     
     String str = "NEW GAME";
@@ -105,7 +103,7 @@ void mousePressed() {
         mouseX < (width + textWidth(str)) / 2 + 10 &&
         mouseY > height - 50 &&
         mouseY < height - 20) {
-          newGrid = new int[col][col];
+          board = new int[col][col];
           checker = true;
           delayTime = false;
           result = 0;
@@ -140,46 +138,46 @@ void symbol(float xPos, float yPos, float size, int type, int colour) {
 }
 
 void symbol(float xPos, float yPos, int type) {
-  float size = minWidth / (col * 2);
-  strokeWeight((2 * minWidth) / (25 * col));
+  float size = boardArea / (col * 2);
+  strokeWeight((2 * boardArea) / (25 * col));
   strokeCap(PROJECT);
   if (type == 1) {
     stroke(#FFF8E1);
-    ellipse(paddingLeft + xPos, paddingTop + yPos, minWidth / (col * 2), minWidth / (col * 2));
+    ellipse(marginLeft + xPos, marginTop + yPos, boardArea / (col * 2), boardArea / (col * 2));
   } else if (type == 2) {
     stroke(#424242);
-    line(paddingLeft + xPos - size / 2, paddingTop + yPos - size / 2, 
-        paddingLeft + xPos + size / 2, paddingTop + yPos + size / 2);
-    line(paddingLeft + xPos - size / 2, paddingTop + yPos + size / 2, 
-        paddingLeft + xPos + size / 2, paddingTop + yPos - size / 2);
+    line(marginLeft + xPos - size / 2, marginTop + yPos - size / 2, 
+        marginLeft + xPos + size / 2, marginTop + yPos + size / 2);
+    line(marginLeft + xPos - size / 2, marginTop + yPos + size / 2, 
+        marginLeft + xPos + size / 2, marginTop + yPos - size / 2);
   }
 }
 
 void drawGrid() {
-  strokeWeight((2 * minWidth) / (25 * col));
+  strokeWeight((2 * boardArea) / (25 * col));
   
   // vertical grid line
   for (int i = 1; i < col; i++) {
-    line((i * minWidth) / col + paddingLeft, paddingTop + (2 * minWidth) / (25 * col), 
-        (i * minWidth) / col + paddingLeft, paddingTop + minWidth - (2 * minWidth) / (25 * col));
+    line((i * boardArea) / col + marginLeft, marginTop + (2 * boardArea) / (25 * col), 
+        (i * boardArea) / col + marginLeft, marginTop + boardArea - (2 * boardArea) / (25 * col));
   }
   
   // horizontal grid line
   for (int i = 1; i < col; i++) {
-    line(paddingLeft + (2 * minWidth) / (25 * col), (i * minWidth) / col + paddingTop, 
-        paddingLeft + minWidth - (2 * minWidth) / (25 * col), (i * minWidth) / col + paddingTop);
+    line(marginLeft + (2 * boardArea) / (25 * col), (i * boardArea) / col + marginTop, 
+        marginLeft + boardArea - (2 * boardArea) / (25 * col), (i * boardArea) / col + marginTop);
   }
 }
 
-void cellArea() {
+void onCellArea() {
   for (int i = 0; i < col; i++) {
     for (int j = 0; j < col; j++) {
-      if (mouseX > paddingLeft + (i * minWidth) / col &&
-          mouseX < paddingLeft + ((i + 1) * minWidth) / col &&
-          mouseY > paddingTop + (j * minWidth) / col &&
-          mouseY < paddingTop + ((j + 1) * minWidth) / col) {
-        if (newGrid[i][j] == 0) {
-          newGrid[i][j] = turn + 1;
+      if (mouseX > marginLeft + (i * boardArea) / col &&
+          mouseX < marginLeft + ((i + 1) * boardArea) / col &&
+          mouseY > marginTop + (j * boardArea) / col &&
+          mouseY < marginTop + ((j + 1) * boardArea) / col) {
+        if (board[i][j] == 0) {
+          board[i][j] = turn + 1;
           turn = 1 - turn;
         }
       }
@@ -189,16 +187,16 @@ void cellArea() {
 
 void duplicateChecker() {
   // horizontal
-  horizontalArrange(newGrid);
+  horizontalArrange(board);
   
   // vertical
-  horizontalArrange(inverseGrid(newGrid));
+  horizontalArrange(inverseGrid(board));
   
   // diagonal
-  diagonalArrange(newGrid);
-  diagonalArrange(inverseGrid(newGrid));
-  diagonalArrange(reflectGrid(newGrid));
-  diagonalArrange(inverseGrid(reflectGrid(newGrid)));
+  diagonalArrange(board);
+  diagonalArrange(inverseGrid(board));
+  diagonalArrange(reflectGrid(board));
+  diagonalArrange(inverseGrid(reflectGrid(board)));
   
   // otherwise
   if (checker && full()) {
@@ -212,40 +210,40 @@ void duplicateChecker() {
 void showResult() {
   if (delayTime) {
     if (result == 2) {
-      symbol(width / 2, minWidth /2 + 80, 120, 2, #424242);
+      symbol(width / 2, boardArea /2 + 80, 120, 2, #424242);
       fill(#00796B);
       textAlign(CENTER, TOP);
       textSize(60);
-      text("WINNER!", width / 2 + 2, minWidth / 2 + 160);
+      text("WINNER!", width / 2 + 2, boardArea / 2 + 160);
       fill(255);
-      text("WINNER!", width / 2, minWidth / 2 + 160);
+      text("WINNER!", width / 2, boardArea / 2 + 160);
       noFill();
       if (carry) {
         scoreX++;
         carry = false;
       }
     } else if (result == 1) {
-      symbol(width / 2, minWidth / 2 + 80, 120, 1, #FFF8E1);
+      symbol(width / 2, boardArea / 2 + 80, 120, 1, #FFF8E1);
       fill(#00796B);
       textAlign(CENTER, TOP);
       textSize(60);
-      text("WINNER!", width / 2 + 2, minWidth / 2 + 160 );
+      text("WINNER!", width / 2 + 2, boardArea / 2 + 160 );
       fill(255);
-      text("WINNER!", width / 2, minWidth / 2 + 160);
+      text("WINNER!", width / 2, boardArea / 2 + 160);
       noFill();
       if (carry) {
         scoreY++;
         carry = false;
       }
     } else {
-      symbol(width / 2 - 70, minWidth / 2 + 80, 120, 2, #424242);
-      symbol(width / 2 + 70, minWidth /2 + 80, 120, 1, #FFF8E1);
+      symbol(width / 2 - 70, boardArea / 2 + 80, 120, 2, #424242);
+      symbol(width / 2 + 70, boardArea /2 + 80, 120, 1, #FFF8E1);
       fill(#00796B);
       textAlign(CENTER, TOP);
       textSize(60);
-      text("DRAW!", width / 2 + 2, minWidth / 2 + 160 );
+      text("DRAW!", width / 2 + 2, boardArea / 2 + 160 );
       fill(255);
-      text("DRAW!", width / 2, minWidth / 2 + 160);
+      text("DRAW!", width / 2, boardArea / 2 + 160);
       noFill();
     }
     delay(500);
@@ -272,7 +270,7 @@ boolean duplicate(int[] num) {
 boolean full() {
   for (int i = 0; i < col; i++) {
     for (int j = 0; j < col; j++) {
-      if (newGrid[i][j] == 0) {
+      if (board[i][j] == 0) {
         return false;
       }
     }
@@ -283,7 +281,7 @@ boolean full() {
 boolean empty() {
   for (int i = 0; i < col; i++) {
     for (int j = 0; j < col; j++) {
-      if (newGrid[i][j] != 0) {
+      if (board[i][j] != 0) {
         return false;
       }
     }

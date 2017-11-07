@@ -50,6 +50,7 @@ void horizontalArrange(int[][] grid) {
           checker = false;
           delayTime = true;
           carry = true;
+          strikeThrough(150, 150, 350, 350);
           break;
         }
       }
@@ -58,6 +59,16 @@ void horizontalArrange(int[][] grid) {
       }
     }
   }
+}
+
+void strikeThrough(float beginX, float beginY, float endX, float endY) {
+  float dx = endX - x;
+  x += dx * easing;
+  
+  float dy = endY - y;
+  y += dy * easing;
+  
+  line(beginX, beginY, x, y);
 }
 
 int[][] inverseGrid(int[][] grid) {
