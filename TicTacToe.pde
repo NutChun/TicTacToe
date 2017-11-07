@@ -1,5 +1,5 @@
-int col = 7;
-int arrange = 7;
+int col = 5;
+int arrange = 5;
 int[][] newGrid = new int[col][col];
 int turn = 1;
 boolean checker = true;
@@ -255,60 +255,13 @@ void duplicateChecker() {
     }
   }
   
-  // left top to right bottom diagonal
-  if (checker) {  
-    for (int i = 0; i <= col - arrange; i++) {
-      for (int j = i; j < i + arrange; j++) {
-        identity[n] = newGrid[j][j];
-        n++;
-      }
-      if (duplicate(identity)) {
-        if (sum(identity) == arrange) {
-          result = 1;
-          checker = false;
-          delayTime = true;
-          identity = new int[arrange];
-          carry = true;
-        } else if (sum(identity) == 2 * arrange) {
-          result = 2;
-          checker = false;
-          delayTime = true;
-          identity = new int[arrange];
-          carry = true;
-        }
-      }
-      identity = new int[arrange];
-      n = 0;
-    }
-  }
+  // diagonal
+  diagonalArrange(newGrid);
+  diagonalArrange(inverseGrid(newGrid));
+  diagonalArrange(reflectGrid(newGrid));
+  diagonalArrange(inverseGrid(reflectGrid(newGrid)));
   
-  // left bottom to right top diagonal
-  if (checker) {
-    for (int i = 0; i <= col - arrange; i++) {
-      for (int j = i; j < i + arrange; j++) {
-        identity[n] = newGrid[col - j - 1][j];
-        n++;
-      }
-      if (duplicate(identity)) {
-        if (sum(identity) == arrange) {
-          result = 1;
-          checker = false;
-          delayTime = true;
-          identity = new int[arrange];
-          carry = true;
-        } else if (sum(identity) == 2 * arrange) {
-          result = 2;
-          checker = false;
-          delayTime = true;
-          identity = new int[arrange];
-          carry = true;
-        }
-      }
-      identity = new int[arrange];
-      n = 0;
-    }
-  }
-  
+  // otherwise
   if (checker && full()) {
     result = 0;
     checker = false;
