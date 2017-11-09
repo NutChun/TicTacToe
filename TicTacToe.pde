@@ -1,14 +1,14 @@
-int col, scene, result, full, scoreX, scoreY; //<>//
-int[][] board;
+int col, scene, result, full, scoreX, scoreY; //<>// //<>// //<>//
+int[][] table;
 int turn = 1;
-float boardArea, marginTop, marginLeft;
+float tableArea, marginTop, marginLeft;
 boolean delayTime = false;
 boolean carry = false;
 
 void setup() {
   size(500, 500);
   setTableSize(3);
-  board = new int[col][col];
+  table = new int[col][col];
   surface.setResizable(true);
 }
 
@@ -20,22 +20,22 @@ void draw() { //<>//
   strokeCap(PROJECT);
   stroke(#00796B);
 
-  boardArea = min(width - 40, height - 190);
+  tableArea = min(width - 40, height - 190);
 
-  marginTop = (height - 150 - boardArea) / 2 + 100;
-  marginLeft = (width - boardArea) / 2;
+  marginTop = (height - 150 - tableArea) / 2 + 100;
+  marginLeft = (width - tableArea) / 2;
 
   noFill();
 
   if (scene == 0) {
     drawGrid();
 
-    // Get the value of the index of the board to draw "X" or "O".
+    // Get the value of the index of the table to draw "X" or "O".
     for (int i = 0; i < col; i++) {
       for (int j = 0; j < col; j++) {
-        drawOX_mark(board[i][j], 
-          (boardArea * (2 * i + 1)) / ( 2 * col), 
-          (boardArea * (2 * j + 1)) / ( 2 * col));
+        drawOX_mark(getValue(i, j), 
+          (tableArea * (2 * i + 1)) / ( 2 * col), 
+          (tableArea * (2 * j + 1)) / ( 2 * col));
       }
     }
   }
@@ -66,7 +66,7 @@ void draw() { //<>//
   fill(0);
   textAlign(CENTER, CENTER);
   text(str, width / 2, height - 35);
-  noFill(); //<>//
+  noFill();
 }
 
 void mousePressed() {
@@ -86,7 +86,7 @@ void mousePressed() {
       mouseX < (width + textWidth(str)) / 2 + 10 &&
       mouseY > height - 50 &&
       mouseY < height - 20) {
-      board = new int[col][col];
+      table = new int[col][col];
       scene = 0;
       delayTime = false;
       result = 0;
@@ -109,37 +109,37 @@ void mousePressed() {
 }
 
 void drawGrid() {
-  /* Draw the board grid line, both of horizontal and vertical line. */
+  /* Draw the table grid line, both of horizontal and vertical line. */
 
-  strokeWeight((2 * boardArea) / (25 * col));
+  strokeWeight((2 * tableArea) / (25 * col));
 
   // vertical grid line
   for (int i = 1; i < col; i++) {
-    line((i * boardArea) / col + marginLeft, marginTop + (2 * boardArea) / (25 * col), 
-      (i * boardArea) / col + marginLeft, marginTop + boardArea - (2 * boardArea) / (25 * col));
+    line((i * tableArea) / col + marginLeft, marginTop + (2 * tableArea) / (25 * col), 
+      (i * tableArea) / col + marginLeft, marginTop + tableArea - (2 * tableArea) / (25 * col));
   }
 
   // horizontal grid line
   for (int i = 1; i < col; i++) {
-    line(marginLeft + (2 * boardArea) / (25 * col), (i * boardArea) / col + marginTop, 
-      marginLeft + boardArea - (2 * boardArea) / (25 * col), (i * boardArea) / col + marginTop);
+    line(marginLeft + (2 * tableArea) / (25 * col), (i * tableArea) / col + marginTop, 
+      marginLeft + tableArea - (2 * tableArea) / (25 * col), (i * tableArea) / col + marginTop);
   }
 }
 
 void onCellArea() {
-  /* This function will assign new value to the board at the index 
+  /* This function will assign new value to the table at the index 
    where the mouse has been clicked on its area and change the turn of the players
    if the value of the index is 0, if it's not, do nothing. 
    1 for "O" and 2 for "X". */
 
   for (int i = 0; i < col; i++) {
     for (int j = 0; j < col; j++) {
-      if (mouseX > marginLeft + (i * boardArea) / col &&
-        mouseX < marginLeft + ((i + 1) * boardArea) / col &&
-        mouseY > marginTop + (j * boardArea) / col &&
-        mouseY < marginTop + ((j + 1) * boardArea) / col) {
-        if (board[i][j] == 0) {
-          board[i][j] = turn + 1;
+      if (mouseX > marginLeft + (i * tableArea) / col &&
+        mouseX < marginLeft + ((i + 1) * tableArea) / col &&
+        mouseY > marginTop + (j * tableArea) / col &&
+        mouseY < marginTop + ((j + 1) * tableArea) / col) {
+        if (getValue(i, j) == 0) {
+          setValue(i, j, turn + 1);
           turn = 1 - turn;
           full++;
         }
@@ -158,11 +158,11 @@ void getWinner() {
       int sumHoriz = 0;
       int sumVert = 0;
       for (int j = 0; j < col; j++) {
-        if (board[i][j] == board[i][0]) {
-          sumHoriz += board[i][j];
+        if (getValue(i, j) == getValue(i, 0)) {
+          sumHoriz += getValue(i, j);
         }
-        if (board[j][i] == board[0][i]) {
-          sumVert += board[j][i];
+        if (getValue(j, i) == getValue(0, i)) {
+          sumVert += getValue(j, i);
         }
       }
       if (sumHoriz == col || sumVert == col) {
@@ -187,11 +187,11 @@ void getWinner() {
     int sumDiagonal2 = 0;
     
     for (int i = 0; i < col; i++) {
-      if (board[i][i] == board[0][0]) {
-        sumDiagonal1 += board[i][i];
+      if (getValue(i, i) == getValue(0, 0)) {
+        sumDiagonal1 += getValue(i, i);
       }
-      if (board[col - i - 1][i] == board[col - 1][0]) {
-        sumDiagonal2 += board[col - i - 1][i];
+      if (getValue(col - i - 1, i) == getValue(col - 1, 0)) {
+        sumDiagonal2 += getValue(col - i - 1, i);
       }
     }
     if (sumDiagonal1 == col || sumDiagonal2 == col) {
@@ -222,40 +222,40 @@ void showResult() {
 
   if (delayTime) {
     if (result == 2) {
-      symbol(width / 2, boardArea /2 + 80, 120, 2, #424242);
+      symbol(width / 2, tableArea /2 + 80, 120, 2, #424242);
       fill(#00796B);
       textAlign(CENTER, TOP);
       textSize(60);
-      text("WINNER!", width / 2 + 2, boardArea / 2 + 160);
+      text("WINNER!", width / 2 + 2, tableArea / 2 + 160);
       fill(255);
-      text("WINNER!", width / 2, boardArea / 2 + 160);
+      text("WINNER!", width / 2, tableArea / 2 + 160);
       noFill();
       if (carry) {
         scoreX++;
         carry = false;
       }
     } else if (result == 1) {
-      symbol(width / 2, boardArea / 2 + 80, 120, 1, #FFF8E1);
+      symbol(width / 2, tableArea / 2 + 80, 120, 1, #FFF8E1);
       fill(#00796B);
       textAlign(CENTER, TOP);
       textSize(60);
-      text("WINNER!", width / 2 + 2, boardArea / 2 + 160 );
+      text("WINNER!", width / 2 + 2, tableArea / 2 + 160 );
       fill(255);
-      text("WINNER!", width / 2, boardArea / 2 + 160);
+      text("WINNER!", width / 2, tableArea / 2 + 160);
       noFill();
       if (carry) {
         scoreY++;
         carry = false;
       }
     } else {
-      symbol(width / 2 - 70, boardArea / 2 + 80, 120, 2, #424242);
-      symbol(width / 2 + 70, boardArea /2 + 80, 120, 1, #FFF8E1);
+      symbol(width / 2 - 70, tableArea / 2 + 80, 120, 2, #424242);
+      symbol(width / 2 + 70, tableArea /2 + 80, 120, 1, #FFF8E1);
       fill(#00796B);
       textAlign(CENTER, TOP);
       textSize(60);
-      text("DRAW!", width / 2 + 2, boardArea / 2 + 160 );
+      text("DRAW!", width / 2 + 2, tableArea / 2 + 160 );
       fill(255);
-      text("DRAW!", width / 2, boardArea / 2 + 160);
+      text("DRAW!", width / 2, tableArea / 2 + 160);
       noFill();
     }
     delay(500);

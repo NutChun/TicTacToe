@@ -1,17 +1,21 @@
 int getTableSize() {
-  return board.length;
+  // get the size of the table
+  return table.length;
 }
 
 int getValue(int i, int j) {
-  return board[i][j];
+  // get the value of the specific index of table
+  return table[i][j];
 }
 
 void setTableSize(int size) {
+  // set the size of the table
   col = size;
 }
 
 void setValue(int i, int j, int val) {
-  board[i][j] = val;
+  // set the value of the specific index of table
+  table[i][j] = val;
 }
 
 void symbol(float xPos, float yPos, float size, int type, int colour) {
@@ -31,14 +35,14 @@ void symbol(float xPos, float yPos, float size, int type, int colour) {
 }
 
 void drawOX_mark(int select, float xPos, float yPos) {
-  /* Draw the symbols ("X" or "O") in the board area. */
+  /* Draw the symbols ("X" or "O") in the table area. */
   
-  float size = boardArea / (col * 2);
-  strokeWeight((2 * boardArea) / (25 * col));
+  float size = tableArea / (col * 2);
+  strokeWeight((2 * tableArea) / (25 * col));
   strokeCap(PROJECT);
   if (select == 1) {
     stroke(#FFF8E1);
-    ellipse(marginLeft + xPos, marginTop + yPos, boardArea / (col * 2), boardArea / (col * 2));
+    ellipse(marginLeft + xPos, marginTop + yPos, tableArea / (col * 2), tableArea / (col * 2));
   } else if (select == 2) {
     stroke(#424242);
     line(marginLeft + xPos - size / 2, marginTop + yPos - size / 2, 
