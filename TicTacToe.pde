@@ -3,6 +3,7 @@ int[][] board = new int[col][col];
 int scene = 0;
 int turn = 1;
 int result = 0;
+int full;
 int scoreX = 0, scoreY = 0;
 float boardArea, marginTop, marginLeft;
 boolean delayTime = false;
@@ -42,7 +43,7 @@ void draw() {
   }
 
   showResult();
-  duplicateChecker();
+  getWinner();
 
   noStroke();
   textSize(30);
@@ -87,8 +88,8 @@ void draw() {
   fill(0);
   textAlign(CENTER, CENTER);
   text(str, width / 2, height - 35);
-  noFill();
-} //<>//
+  noFill(); //<>//
+}
 
 void mousePressed() {
   /* This function will call everytime the mouse has been press. */
@@ -111,6 +112,7 @@ void mousePressed() {
       scene = 0;
       delayTime = false;
       result = 0;
+      full = 0;
     }
 
     // Switch between "X" and "O".
@@ -161,30 +163,74 @@ void onCellArea() {
         if (board[i][j] == 0) {
           board[i][j] = turn + 1;
           turn = 1 - turn;
+          full++;
         }
       }
     }
   }
 }
 
-void duplicateChecker() {
+void getWinner() {
   /* Check the values that arrange in all row, 
    for horizontal, vertical, diagonal and otherwise case, respectively. */
-
-  // horizontal
-  horizontalArrange(board);
-
-  // vertical
-  horizontalArrange(inverseGrid(board));
-
+  
+  // horizontal and vertical
+  if (scene == 0) {
+    for (int i = 0; i < col; i++) {
+      int sumHoriz = 0;
+      int sumVert = 0;
+      for (int j = 0; j < col; j++) {
+        if (board[i][j] == board[i][0]) {
+          sumHoriz += board[i][j];
+        }
+        if (board[j][i] == board[0][i]) {
+          sumVert += board[j][i];
+        }
+      }
+      if (sumHoriz == col || sumVert == col) {
+        result = 1;
+        scene = 1;
+        delayTime = true;
+        carry = true;
+        break;
+      } else if (sumHoriz == 2 * col || sumVert == 2 * col) {
+        result = 2;
+        scene = 1;
+        delayTime = true;
+        carry = true;
+        break;
+      }
+    }
+  }
+  
   // diagonal
-  diagonalArrange(board);
-  diagonalArrange(inverseGrid(board));
-  diagonalArrange(reflectGrid(board));
-  diagonalArrange(inverseGrid(reflectGrid(board)));
+  if (scene == 0) {  
+    int sumDiagonal1 = 0;
+    int sumDiagonal2 = 0;
+    
+    for (int i = 0; i < col; i++) {
+      if (board[i][i] == board[0][0]) {
+        sumDiagonal1 += board[i][i];
+      }
+      if (board[col - i - 1][i] == board[col - 1][0]) {
+        sumDiagonal2 += board[col - i - 1][i];
+      }
+    }
+    if (sumDiagonal1 == col || sumDiagonal2 == col) {
+      result = 1;
+      scene = 1;
+      delayTime = true;
+      carry = true;
+    } else if (sumDiagonal1 == 2 * col || sumDiagonal2 == 2 * col) {
+      result = 2;
+      scene = 1;
+      delayTime = true;
+      carry = true;
+    }
+  }
 
   // otherwise
-  if (scene == 0 && full(board)) {
+  if (scene == 0 && full == col * col) {
     result = 0;
     scene = 1;
     delayTime = true;
