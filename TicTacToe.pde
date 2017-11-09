@@ -1,4 +1,4 @@
-int col, scene, result, full, scoreX, scoreY;
+int col, scene, result, full, scoreX, scoreY; //<>//
 int[][] board;
 int turn = 1;
 float boardArea, marginTop, marginLeft;
@@ -33,7 +33,7 @@ void draw() { //<>//
     // Get the value of the index of the board to draw "X" or "O".
     for (int i = 0; i < col; i++) {
       for (int j = 0; j < col; j++) {
-        drawOX_mark(getValue(i, j), 
+        drawOX_mark(board[i][j], 
           (boardArea * (2 * i + 1)) / ( 2 * col), 
           (boardArea * (2 * j + 1)) / ( 2 * col));
       }
@@ -138,8 +138,8 @@ void onCellArea() {
         mouseX < marginLeft + ((i + 1) * boardArea) / col &&
         mouseY > marginTop + (j * boardArea) / col &&
         mouseY < marginTop + ((j + 1) * boardArea) / col) {
-        if (getValue(i, j) == 0) {
-          setValue(i, j, turn + 1);
+        if (board[i][j] == 0) {
+          board[i][j] = turn + 1;
           turn = 1 - turn;
           full++;
         }
@@ -158,11 +158,11 @@ void getWinner() {
       int sumHoriz = 0;
       int sumVert = 0;
       for (int j = 0; j < col; j++) {
-        if (getValue(i, j) == getValue(i, 0)) {
-          sumHoriz += getValue(i, j);
+        if (board[i][j] == board[i][0]) {
+          sumHoriz += board[i][j];
         }
-        if (getValue(j, i) == getValue(0, i)) {
-          sumVert += getValue(j, i);
+        if (board[j][i] == board[0][i]) {
+          sumVert += board[j][i];
         }
       }
       if (sumHoriz == col || sumVert == col) {
@@ -187,11 +187,11 @@ void getWinner() {
     int sumDiagonal2 = 0;
     
     for (int i = 0; i < col; i++) {
-      if (getValue(i, i) == getValue(0, 0)) {
-        sumDiagonal1 += getValue(i, i);
+      if (board[i][i] == board[0][0]) {
+        sumDiagonal1 += board[i][i];
       }
-      if (getValue(col - i - 1, i) == getValue(col - 1, 0)) {
-        sumDiagonal2 += getValue(col - i - 1, i);
+      if (board[col - i - 1][i] == board[col - 1][0]) {
+        sumDiagonal2 += board[col - i - 1][i];
       }
     }
     if (sumDiagonal1 == col || sumDiagonal2 == col) {
