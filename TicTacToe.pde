@@ -7,12 +7,12 @@ boolean carry = false;
 
 void setup() {
   size(500, 500);
-  setTableSize(3);
+  setTableSize(5);
   table = new int[col][col];
   surface.setResizable(true);
 }
 
-void draw() { //<>//
+void draw() {
   background(#00BFA5);
   fill(#ECEFF1);
   rect(0, 0, width, 100);
@@ -155,23 +155,24 @@ void getWinner() {
   // horizontal and vertical
   if (scene == 0) {
     for (int i = 0; i < col; i++) {
-      int sumHoriz = 0;
-      int sumVert = 0;
+      int horizVal = 0, vertVal = 0, sumHoriz = 0, sumVert = 0;
       for (int j = 0; j < col; j++) {
         if (getValue(i, j) == getValue(i, 0)) {
+          horizVal = getValue(i, 0);
           sumHoriz += getValue(i, j);
         }
         if (getValue(j, i) == getValue(0, i)) {
+          vertVal = getValue(0, i);
           sumVert += getValue(j, i);
         }
       }
-      if (sumHoriz == col || sumVert == col) {
+      if ((sumHoriz == col && horizVal == 1) || (sumVert == col && vertVal == 1)) {
         result = 1;
         scene = 1;
         delayTime = true;
         carry = true;
         break;
-      } else if (sumHoriz == 2 * col || sumVert == 2 * col) {
+      } else if ((sumHoriz == 2 * col && horizVal == 2) || (sumVert == 2 * col && vertVal == 2)) {
         result = 2;
         scene = 1;
         delayTime = true;
@@ -183,23 +184,23 @@ void getWinner() {
   
   // diagonal
   if (scene == 0) {  
-    int sumDiagonal1 = 0;
-    int sumDiagonal2 = 0;
-    
+    int val1 = 0, val2 = 0, sumDiagonal1 = 0, sumDiagonal2 = 0;
     for (int i = 0; i < col; i++) {
       if (getValue(i, i) == getValue(0, 0)) {
+        val1 = getValue(0, 0);
         sumDiagonal1 += getValue(i, i);
       }
       if (getValue(col - i - 1, i) == getValue(col - 1, 0)) {
+        val2 = getValue(col - 1, 0);
         sumDiagonal2 += getValue(col - i - 1, i);
       }
     }
-    if (sumDiagonal1 == col || sumDiagonal2 == col) {
+    if ((sumDiagonal1 == col && val1 == 1) || (sumDiagonal2 == col && val2 == 1)) {
       result = 1;
       scene = 1;
       delayTime = true;
       carry = true;
-    } else if (sumDiagonal1 == 2 * col || sumDiagonal2 == 2 * col) {
+    } else if ((sumDiagonal1 == 2 * col && val1 == 2) || (sumDiagonal2 == 2 * col && val2 == 2)) {
       result = 2;
       scene = 1;
       delayTime = true;
