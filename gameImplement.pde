@@ -30,16 +30,16 @@ void symbol(float xPos, float yPos, float size, int type, int colour) {
   noFill();
 }
 
-void symbol(float xPos, float yPos, int type) {
+void drawOX_mark(int select, float xPos, float yPos) {
   /* Draw the symbols ("X" or "O") in the board area. */
   
   float size = boardArea / (col * 2);
   strokeWeight((2 * boardArea) / (25 * col));
   strokeCap(PROJECT);
-  if (type == 1) {
+  if (select == 1) {
     stroke(#FFF8E1);
     ellipse(marginLeft + xPos, marginTop + yPos, boardArea / (col * 2), boardArea / (col * 2));
-  } else if (type == 2) {
+  } else if (select == 2) {
     stroke(#424242);
     line(marginLeft + xPos - size / 2, marginTop + yPos - size / 2, 
         marginLeft + xPos + size / 2, marginTop + yPos + size / 2);
@@ -48,139 +48,26 @@ void symbol(float xPos, float yPos, int type) {
   }
 }
 
-void diagonalArrange(int[][] grid) {
-  // Check the values that arrange in a diagonal row.
-  
-  if (scene == 0) {
-    for (int i = 0; i <= col - arrange; i++) {
-      int outBound = 0;
-      for (int j = i; j <= col - arrange; j++) {
-        int[] identity = new int[arrange];
-        int inBound = outBound;
-        int n = 0;
-        for (int k = j; k < j + arrange; k++) {
-          identity[n] = grid[k][inBound];
-          inBound++;
-          n++;
-        }
-        if (duplicate(identity) && sum(identity) != 0) {
-          if (sum(identity) == arrange) {
-            result = 1;
-          } else if (sum(identity) == 2 * arrange) {
-            result = 2;
-          }
-          scene = 1;
-          delayTime = true;
-          carry = true;
-          break;
-        }
-        outBound++;
-      }
-      if (scene == 1) {
-        break;
-      }
-    }
+void buttonOX() {
+  if (turn == 1) {
+    fill(#00796B);
+    rect(15, 28, 150, 50, 35);
+    fill(#ECEFF1);
+    rect(width - 165, 28, 150, 50, 35);
+  } else if (turn == 0) {
+    fill(#ECEFF1);
+    rect(15, 28, 150, 50, 35);
+    fill(#00796B);
+    rect(width - 165, 28, 150, 50, 35);
   }
-}
 
-void horizontalArrange(int[][] grid) {
-  // Check the values that arrange in a horizontal row.
-  
-  if (scene == 0) {
-    for (int i = 0; i < col; i++) {
-      for (int j = 0; j <= col - arrange; j++) {
-        int[] identity = new int[arrange];
-        int n = 0;
-        for (int k = j; k < j + arrange; k++) {
-          identity[n] = grid[i][k];
-          n++;
-        }
-        if (duplicate(identity) && sum(identity) != 0) {
-          if (sum(identity) == arrange) {
-            result = 1;
-          } else if (sum(identity) == 2 * arrange) {
-            result = 2;
-          }
-          scene = 1;
-          delayTime = true;
-          carry = true;
-          break;
-        }
-      }
-      if (scene == 1) {
-        break;
-      }
-    }
-  }
-}
-
-int[][] inverseGrid(int[][] grid) {
-  // Make the grid inverse.
-  
-  int[][] res = new int[col][col];
-  for (int i = 0; i < col; i++) {
-    for (int j = 0; j < col; j++) {
-      res[i][j] = grid[j][i];
-    }
-  }
-  return res;
-}
-
-int[][] reflectGrid(int[][] grid) {
-  // Make the grid reverse.
-  
-  int[][] res = new int[col][col];
-  for (int i = 0; i < col; i++) {
-    for (int j = 0; j < col; j++) {
-      res[i][j] = grid[i][col - 1 - j];
-    }
-  }
-  return res;
-}
-
-int sum(int[] num) {
-  // Return sum of the array.
-  
-  int res = 0;
-  for (int i : num) {
-    res += i;
-  }
-  return res;
-}
-
-boolean duplicate(int[] num) {
-  // Return true if the array has all the same values.
-  
-  for (int i : num) {
-    if (i != num[0]) {
-      return false;
-    }
-  }
-  return true;
-}
-
-boolean full(int[][] stuff) {
-  // Return true if the array is full.
-  
-  for (int i = 0; i < col; i++) {
-    for (int j = 0; j < col; j++) {
-      if (stuff[i][j] == 0) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-boolean empty(int[][] stuff) {
-  // Return true if the array is empty.
-  
-  for (int i = 0; i < col; i++) {
-    for (int j = 0; j < col; j++) {
-      if (stuff[i][j] != 0) {
-        return false;
-      }
-    }
-  }
-  return true;
+  fill(255);
+  rect(15, 25, 150, 50, 35);
+  rect(width - 165, 25, 150, 50, 35);
+  symbol(45, 50, 20, 2, #424242);
+  symbol(width - 135, 50, 20, 1, #424242);
+  fill(0);
+  textAlign(RIGHT, CENTER);
+  text(scoreX, 145, 45);
+  text(scoreY, width - 35, 45);
 }

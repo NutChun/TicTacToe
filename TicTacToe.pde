@@ -1,20 +1,18 @@
-int col = 3, arrange = 3;
-int[][] board = new int[col][col];
-int scene = 0;
+int col, scene, result, full, scoreX, scoreY;
+int[][] board;
 int turn = 1;
-int result = 0;
-int full;
-int scoreX = 0, scoreY = 0;
 float boardArea, marginTop, marginLeft;
 boolean delayTime = false;
 boolean carry = false;
 
 void setup() {
   size(500, 500);
+  setTableSize(3);
+  board = new int[col][col];
   surface.setResizable(true);
 }
 
-void draw() {
+void draw() { //<>//
   background(#00BFA5);
   fill(#ECEFF1);
   rect(0, 0, width, 100);
@@ -35,9 +33,9 @@ void draw() {
     // Get the value of the index of the board to draw "X" or "O".
     for (int i = 0; i < col; i++) {
       for (int j = 0; j < col; j++) {
-        symbol((boardArea * (2 * i + 1)) / ( 2 * col), 
-          (boardArea * (2 * j + 1)) / ( 2 * col), 
-          board[i][j]);
+        drawOX_mark(getValue(i, j), 
+          (boardArea * (2 * i + 1)) / ( 2 * col), 
+          (boardArea * (2 * j + 1)) / ( 2 * col));
       }
     }
   }
@@ -49,27 +47,7 @@ void draw() {
   textSize(30);
 
   // Display "X" and "O" buttons.
-  if (turn == 1) {
-    fill(#00796B);
-    rect(15, 28, 150, 50, 35);
-    fill(#ECEFF1);
-    rect(width - 165, 28, 150, 50, 35);
-  } else if (turn == 0) {
-    fill(#ECEFF1);
-    rect(15, 28, 150, 50, 35);
-    fill(#00796B);
-    rect(width - 165, 28, 150, 50, 35);
-  }
-
-  fill(255);
-  rect(15, 25, 150, 50, 35);
-  rect(width - 165, 25, 150, 50, 35);
-  symbol(45, 50, 20, 2, #424242);
-  symbol(width - 135, 50, 20, 1, #424242);
-  fill(0);
-  textAlign(RIGHT, CENTER);
-  text(scoreX, 145, 45);
-  text(scoreY, width - 35, 45);
+  buttonOX();
 
   fill(255);
   textAlign(CENTER, BOTTOM);
@@ -115,16 +93,16 @@ void mousePressed() {
       full = 0;
     }
 
-    // Switch between "X" and "O".
+    // Switch between "X" and "O" buttons.
     if (mouseX > width - 165 &&
       mouseX < width - 165 + 150 &&
       mouseY > 25 && mouseY < 75 &&
-      turn == 1 && empty(board)) {
+      turn == 1 && full == 0) {
       turn = 0;
     } else if (mouseX > 15 &&
       mouseX < 15 + 150 &&
       mouseY > 25 && mouseY < 75 &&
-      turn == 0 && empty(board)) {
+      turn == 0 && full == 0) {
       turn = 1;
     }
   }
@@ -160,8 +138,8 @@ void onCellArea() {
         mouseX < marginLeft + ((i + 1) * boardArea) / col &&
         mouseY > marginTop + (j * boardArea) / col &&
         mouseY < marginTop + ((j + 1) * boardArea) / col) {
-        if (board[i][j] == 0) {
-          board[i][j] = turn + 1;
+        if (getValue(i, j) == 0) {
+          setValue(i, j, turn + 1);
           turn = 1 - turn;
           full++;
         }
@@ -180,11 +158,11 @@ void getWinner() {
       int sumHoriz = 0;
       int sumVert = 0;
       for (int j = 0; j < col; j++) {
-        if (board[i][j] == board[i][0]) {
-          sumHoriz += board[i][j];
+        if (getValue(i, j) == getValue(i, 0)) {
+          sumHoriz += getValue(i, j);
         }
-        if (board[j][i] == board[0][i]) {
-          sumVert += board[j][i];
+        if (getValue(j, i) == getValue(0, i)) {
+          sumVert += getValue(j, i);
         }
       }
       if (sumHoriz == col || sumVert == col) {
@@ -209,11 +187,11 @@ void getWinner() {
     int sumDiagonal2 = 0;
     
     for (int i = 0; i < col; i++) {
-      if (board[i][i] == board[0][0]) {
-        sumDiagonal1 += board[i][i];
+      if (getValue(i, i) == getValue(0, 0)) {
+        sumDiagonal1 += getValue(i, i);
       }
-      if (board[col - i - 1][i] == board[col - 1][0]) {
-        sumDiagonal2 += board[col - i - 1][i];
+      if (getValue(col - i - 1, i) == getValue(col - 1, 0)) {
+        sumDiagonal2 += getValue(col - i - 1, i);
       }
     }
     if (sumDiagonal1 == col || sumDiagonal2 == col) {
