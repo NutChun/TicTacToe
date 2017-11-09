@@ -1,4 +1,4 @@
-int col = 5, arrange = 5; //<>//
+int col = 3, arrange = 3;
 int[][] board = new int[col][col];
 int scene = 0;
 int turn = 1;
@@ -88,7 +88,7 @@ void draw() {
   textAlign(CENTER, CENTER);
   text(str, width / 2, height - 35);
   noFill();
-}
+} //<>//
 
 void mousePressed() {
   /* This function will call everytime the mouse has been press. */
@@ -169,7 +169,7 @@ void onCellArea() {
 
 void duplicateChecker() {
   /* Check the values that arrange in all row, 
-   for horizontal, vertical, diagonal and otherwise case, respectively.*/
+   for horizontal, vertical, diagonal and otherwise case, respectively. */
 
   // horizontal
   horizontalArrange(board);

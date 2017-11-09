@@ -1,3 +1,19 @@
+int getTableSize() {
+  return board.length;
+}
+
+int getValue(int i, int j) {
+  return board[i][j];
+}
+
+void setTableSize(int size) {
+  col = size;
+}
+
+void setValue(int i, int j, int val) {
+  board[i][j] = val;
+}
+
 void symbol(float xPos, float yPos, float size, int type, int colour) {
   /* Draw the symbols ("X" or "O") */
   
