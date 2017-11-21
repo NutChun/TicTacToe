@@ -1,14 +1,14 @@
-int col, scene, result, full, scoreX, scoreY; //<>// //<>// //<>//
+int full, scoreX, scoreO; //<>//
 int[][] table;
 int turn = 1;
 float tableArea, marginTop, marginLeft;
-boolean delayTime = false;
+boolean result = false;
 boolean carry = false;
+boolean keep = true;
 
 void setup() {
   size(500, 500);
-  setTableSize(5);
-  table = new int[col][col];
+  setTableSize(3);
   surface.setResizable(true);
 }
 
@@ -27,15 +27,15 @@ void draw() {
 
   noFill();
 
-  if (scene == 0) {
+  if (!result) {
     drawGrid();
 
     // Get the value of the index of the table to draw "X" or "O".
-    for (int i = 0; i < col; i++) {
-      for (int j = 0; j < col; j++) {
+    for (int i = 0; i < getTableSize(); i++) {
+      for (int j = 0; j < getTableSize(); j++) {
         drawOX_mark(getValue(i, j), 
-          (tableArea * (2 * i + 1)) / ( 2 * col), 
-          (tableArea * (2 * j + 1)) / ( 2 * col));
+          (tableArea * (2 * i + 1)) / ( 2 * getTableSize()), 
+          (tableArea * (2 * j + 1)) / ( 2 * getTableSize()));
       }
     }
   }
@@ -75,7 +75,7 @@ void mousePressed() {
   if (mouseButton == LEFT) {
 
     // Call onCellArea function
-    if (scene == 0) {
+    if (getWinner() == 0) {
       onCellArea();
     }
 
@@ -86,11 +86,11 @@ void mousePressed() {
       mouseX < (width + textWidth(str)) / 2 + 10 &&
       mouseY > height - 50 &&
       mouseY < height - 20) {
-      table = new int[col][col];
-      scene = 0;
-      delayTime = false;
-      result = 0;
+      setTableSize(getTableSize());
+      result = false;
       full = 0;
+      carry = false;
+      keep = true;
     }
 
     // Switch between "X" and "O" buttons.
@@ -111,18 +111,18 @@ void mousePressed() {
 void drawGrid() {
   /* Draw the table grid line, both of horizontal and vertical line. */
 
-  strokeWeight((2 * tableArea) / (25 * col));
+  strokeWeight((2 * tableArea) / (25 * getTableSize()));
 
   // vertical grid line
-  for (int i = 1; i < col; i++) {
-    line((i * tableArea) / col + marginLeft, marginTop + (2 * tableArea) / (25 * col), 
-      (i * tableArea) / col + marginLeft, marginTop + tableArea - (2 * tableArea) / (25 * col));
+  for (int i = 1; i < getTableSize(); i++) {
+    line((i * tableArea) / getTableSize() + marginLeft, marginTop + (2 * tableArea) / (25 * getTableSize()), 
+      (i * tableArea) / getTableSize() + marginLeft, marginTop + tableArea - (2 * tableArea) / (25 * getTableSize()));
   }
 
   // horizontal grid line
-  for (int i = 1; i < col; i++) {
-    line(marginLeft + (2 * tableArea) / (25 * col), (i * tableArea) / col + marginTop, 
-      marginLeft + tableArea - (2 * tableArea) / (25 * col), (i * tableArea) / col + marginTop);
+  for (int i = 1; i < getTableSize(); i++) {
+    line(marginLeft + (2 * tableArea) / (25 * getTableSize()), (i * tableArea) / getTableSize() + marginTop, 
+      marginLeft + tableArea - (2 * tableArea) / (25 * getTableSize()), (i * tableArea) / getTableSize() + marginTop);
   }
 }
 
@@ -132,12 +132,12 @@ void onCellArea() {
    if the value of the index is 0, if it's not, do nothing. 
    1 for "O" and 2 for "X". */
 
-  for (int i = 0; i < col; i++) {
-    for (int j = 0; j < col; j++) {
-      if (mouseX > marginLeft + (i * tableArea) / col &&
-        mouseX < marginLeft + ((i + 1) * tableArea) / col &&
-        mouseY > marginTop + (j * tableArea) / col &&
-        mouseY < marginTop + ((j + 1) * tableArea) / col) {
+  for (int i = 0; i < getTableSize(); i++) {
+    for (int j = 0; j < getTableSize(); j++) {
+      if (mouseX > marginLeft + (i * tableArea) / getTableSize() &&
+        mouseX < marginLeft + ((i + 1) * tableArea) / getTableSize() &&
+        mouseY > marginTop + (j * tableArea) / getTableSize() &&
+        mouseY < marginTop + ((j + 1) * tableArea) / getTableSize()) {
         if (getValue(i, j) == 0) {
           setValue(i, j, turn + 1);
           turn = 1 - turn;
@@ -148,94 +148,68 @@ void onCellArea() {
   }
 }
 
-void getWinner() {
+int getWinner() {
   /* Check the values that arrange in all row, 
    for horizontal, vertical, diagonal and otherwise case, respectively. */
   
   // horizontal and vertical
-  if (scene == 0) {
-    for (int i = 0; i < col; i++) {
-      int horizVal = 0, vertVal = 0, sumHoriz = 0, sumVert = 0;
-      for (int j = 0; j < col; j++) {
-        if (getValue(i, j) == getValue(i, 0)) {
-          horizVal = getValue(i, 0);
-          sumHoriz += getValue(i, j);
-        }
-        if (getValue(j, i) == getValue(0, i)) {
-          vertVal = getValue(0, i);
-          sumVert += getValue(j, i);
-        }
+  for (int i = 0; i < getTableSize(); i++) {
+    int sumHoriz = 0, sumVert = 0;
+    for (int j = 0; j < getTableSize(); j++) {
+      if (getValue(i, j) == getValue(i, 0)) {
+        sumHoriz += getValue(i, j);
       }
-      if ((sumHoriz == col && horizVal == 1) || (sumVert == col && vertVal == 1)) {
-        result = 1;
-        scene = 1;
-        delayTime = true;
-        carry = true;
-        break;
-      } else if ((sumHoriz == 2 * col && horizVal == 2) || (sumVert == 2 * col && vertVal == 2)) {
-        result = 2;
-        scene = 1;
-        delayTime = true;
-        carry = true;
-        break;
+      if (getValue(j, i) == getValue(0, i)) {
+        sumVert += getValue(j, i);
       }
+    }
+    if ((sumHoriz == getTableSize()) || (sumVert == getTableSize())) {
+      result = true;
+      carry = true;
+      return 1;
+    } else if ((sumHoriz == 2 * getTableSize()) || (sumVert == 2 * getTableSize())) {
+      result = true;
+      carry = true;
+      return 2;
     }
   }
   
   // diagonal
-  if (scene == 0) {  
-    int val1 = 0, val2 = 0, sumDiagonal1 = 0, sumDiagonal2 = 0;
-    for (int i = 0; i < col; i++) {
-      if (getValue(i, i) == getValue(0, 0)) {
-        val1 = getValue(0, 0);
-        sumDiagonal1 += getValue(i, i);
-      }
-      if (getValue(col - i - 1, i) == getValue(col - 1, 0)) {
-        val2 = getValue(col - 1, 0);
-        sumDiagonal2 += getValue(col - i - 1, i);
-      }
+  int sumDiagonal1 = 0, sumDiagonal2 = 0;
+  for (int i = 0; i < getTableSize(); i++) {
+    if (getValue(i, i) == getValue(0, 0)) {
+      sumDiagonal1 += getValue(i, i);
     }
-    if ((sumDiagonal1 == col && val1 == 1) || (sumDiagonal2 == col && val2 == 1)) {
-      result = 1;
-      scene = 1;
-      delayTime = true;
-      carry = true;
-    } else if ((sumDiagonal1 == 2 * col && val1 == 2) || (sumDiagonal2 == 2 * col && val2 == 2)) {
-      result = 2;
-      scene = 1;
-      delayTime = true;
-      carry = true;
+    if (getValue(getTableSize() - i - 1, i) == getValue(getTableSize() - 1, 0)) {
+      sumDiagonal2 += getValue(getTableSize() - i - 1, i);
     }
+  }
+  if ((sumDiagonal1 == getTableSize()) || (sumDiagonal2 == getTableSize())) {
+    result = true;
+    carry = true;
+    return 1;
+  } else if ((sumDiagonal1 == 2 * getTableSize()) || (sumDiagonal2 == 2 * getTableSize())) {
+    result = true;
+    carry = true;
+    return 2;
   }
 
   // otherwise
-  if (scene == 0 && full == col * col) {
-    result = 0;
-    scene = 1;
-    delayTime = true;
+  if (full == getTableSize() * getTableSize()) {
+    result = true;
     carry = true;
+    return 3;
   }
+  
+  return 0;
 }
 
 void showResult() {
   /* Display the result scene to show the players who the win is.
    1 for "O", 2 for "X" and otherwise for DRAW. */
 
-  if (delayTime) {
-    if (result == 2) {
-      symbol(width / 2, tableArea /2 + 80, 120, 2, #424242);
-      fill(#00796B);
-      textAlign(CENTER, TOP);
-      textSize(60);
-      text("WINNER!", width / 2 + 2, tableArea / 2 + 160);
-      fill(255);
-      text("WINNER!", width / 2, tableArea / 2 + 160);
-      noFill();
-      if (carry) {
-        scoreX++;
-        carry = false;
-      }
-    } else if (result == 1) {
+  if (result) {
+    if (getWinner() == 1) {
       symbol(width / 2, tableArea / 2 + 80, 120, 1, #FFF8E1);
       fill(#00796B);
       textAlign(CENTER, TOP);
@@ -244,11 +218,24 @@ void showResult() {
       fill(255);
       text("WINNER!", width / 2, tableArea / 2 + 160);
       noFill();
-      if (carry) {
-        scoreY++;
-        carry = false;
+      if (carry && keep) {
+        scoreO++;
+        keep = false;
       }
-    } else {
+    } else if (getWinner() == 2) {
+      symbol(width / 2, tableArea /2 + 80, 120, 2, #424242);
+      fill(#00796B);
+      textAlign(CENTER, TOP);
+      textSize(60);
+      text("WINNER!", width / 2 + 2, tableArea / 2 + 160);
+      fill(255);
+      text("WINNER!", width / 2, tableArea / 2 + 160);
+      noFill();
+      if (carry && keep) {
+        scoreX++;
+        keep = false;
+      }
+    } else if (getWinner() == 3) {
       symbol(width / 2 - 70, tableArea / 2 + 80, 120, 2, #424242);
       symbol(width / 2 + 70, tableArea /2 + 80, 120, 1, #FFF8E1);
       fill(#00796B);
@@ -261,4 +248,16 @@ void showResult() {
     }
     delay(500);
   }
+}
+
+class Board {
+  
+}
+
+class Controller {
+  
+}
+
+class Display {
+  
 }

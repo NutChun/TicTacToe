@@ -10,7 +10,7 @@ int getValue(int i, int j) {
 
 void setTableSize(int size) {
   // set the size of the table
-  col = size;
+  table = new int[size][size];
 }
 
 void setValue(int i, int j, int val) {
@@ -37,12 +37,12 @@ void symbol(float xPos, float yPos, float size, int type, int colour) {
 void drawOX_mark(int select, float xPos, float yPos) {
   /* Draw the symbols ("X" or "O") in the table area. */
   
-  float size = tableArea / (col * 2);
-  strokeWeight((2 * tableArea) / (25 * col));
+  float size = tableArea / (getTableSize() * 2);
+  strokeWeight((2 * tableArea) / (25 * getTableSize()));
   strokeCap(PROJECT);
   if (select == 1) {
     stroke(#FFF8E1);
-    ellipse(marginLeft + xPos, marginTop + yPos, tableArea / (col * 2), tableArea / (col * 2));
+    ellipse(marginLeft + xPos, marginTop + yPos, tableArea / (getTableSize() * 2), tableArea / (getTableSize() * 2));
   } else if (select == 2) {
     stroke(#424242);
     line(marginLeft + xPos - size / 2, marginTop + yPos - size / 2, 
@@ -73,5 +73,5 @@ void buttonOX() {
   fill(0);
   textAlign(RIGHT, CENTER);
   text(scoreX, 145, 45);
-  text(scoreY, width - 35, 45);
+  text(scoreO, width - 35, 45);
 }
