@@ -129,9 +129,67 @@ class Board {
 }
 
 class Controller {
-  
+  void onCellArea() {
+    /* This function will assign new value to the table at the index 
+     where the mouse has been clicked on its area and change the turn of the players
+     if the value of the index is 0, if it's not, do nothing. 
+     1 for "O" and 2 for "X". */
+
+    for (int i = 0; i < board.getTableSize(); i++) {
+      for (int j = 0; j < board.getTableSize(); j++) {
+        if (mouseX > marginLeft + (i * tableArea) / board.getTableSize() &&
+          mouseX < marginLeft + ((i + 1) * tableArea) / board.getTableSize() &&
+          mouseY > marginTop + (j * tableArea) / board.getTableSize() &&
+          mouseY < marginTop + ((j + 1) * tableArea) / board.getTableSize()) {
+          if (board.getValue(i, j) == 0) {
+            board.setValue(i, j, board.getTurn() + 1);
+            board.setTurn(1 - board.getTurn());
+            full++;
+          }
+        }
+      }
+    }
+  }
 }
 
 class Display {
+  void symbol(float xPos, float yPos, float size, int type, int colour) {
+    /* Draw the symbols ("X" or "O") */
+    
+    strokeWeight((8 * size) / 50);
+    strokeCap(PROJECT);
+    if (type == 1) {
+      stroke(colour);
+      ellipse(xPos, yPos, size + (8 * size) / 50, size + (8 * size) / 50);
+    } else if (type == 2) {
+      stroke(colour);
+      line(xPos - size / 2, yPos - size / 2, xPos + size / 2, yPos + size / 2);
+      line(xPos - size / 2, yPos + size / 2, xPos + size / 2, yPos - size / 2);
+    }
+    noFill();
+  }
   
+  void buttonOX() {
+    if (board.getTurn() == 1) {
+      fill(#00796B);
+      rect(15, 28, 150, 50, 35);
+      fill(#ECEFF1);
+      rect(width - 165, 28, 150, 50, 35);
+    } else if (board.getTurn() == 0) {
+      fill(#ECEFF1);
+      rect(15, 28, 150, 50, 35);
+      fill(#00796B);
+      rect(width - 165, 28, 150, 50, 35);
+    }
+  
+    fill(255);
+    rect(15, 25, 150, 50, 35);
+    rect(width - 165, 25, 150, 50, 35);
+    symbol(45, 50, 20, 2, #424242);
+    symbol(width - 135, 50, 20, 1, #424242);
+    fill(0);
+    textAlign(RIGHT, CENTER);
+    text(scoreX, 145, 45);
+    text(scoreO, width - 35, 45);
+  }
 }
