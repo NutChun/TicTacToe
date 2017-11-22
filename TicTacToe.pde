@@ -41,7 +41,7 @@ void draw() {
   textSize(30);
 
   // Display "X" and "O" buttons.
-  ctrl.buttonOX();
+  display.buttonOX();
 
   fill(255);
   textAlign(CENTER, BOTTOM);
