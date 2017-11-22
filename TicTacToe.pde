@@ -192,4 +192,141 @@ class Display {
     text(scoreX, 145, 45);
     text(scoreO, width - 35, 45);
   }
+  
+  void drawGrid() {
+    /* Draw the table grid line, both of horizontal and vertical line. */
+
+    stroke(#00796B);
+    strokeCap(PROJECT);
+    strokeWeight((2 * tableArea) / (25 * board.getTableSize()));
+
+    // vertical grid line
+    for (int i = 1; i < board.getTableSize(); i++) {
+      line((i * tableArea) / board.getTableSize() + marginLeft, marginTop + (2 *tableArea) / (25 * board.getTableSize()), 
+        (i * tableArea) / board.getTableSize() + marginLeft, marginTop + tableArea - (2 * tableArea) / (25 * board.getTableSize()));
+    }
+
+    // horizontal grid line
+    for (int i = 1; i < board.getTableSize(); i++) {
+      line(marginLeft + (2 * tableArea) / (25 * board.getTableSize()), (i * tableArea) / board.getTableSize() + marginTop, 
+        marginLeft + tableArea - (2 * tableArea) / (25 * board.getTableSize()), (i * tableArea) / board.getTableSize() + marginTop);
+    }
+  }
+
+  void drawOX_mark(int select, float xPos, float yPos) {
+    /* Draw the symbols ("X" or "O") in the table area. */
+
+    float size = tableArea / (board.getTableSize() * 2);
+    strokeWeight((2 * tableArea) / (25 * board.getTableSize()));
+    strokeCap(PROJECT);
+    noFill();
+    if (select == 1) {
+      stroke(#FFF8E1);
+      ellipse(marginLeft + xPos, marginTop + yPos, tableArea / (board.getTableSize() * 2), tableArea / (board.getTableSize() * 2));
+    } else if (select == 2) {
+      stroke(#424242);
+      line(marginLeft + xPos - size / 2, marginTop + yPos - size / 2, 
+        marginLeft + xPos + size / 2, marginTop + yPos + size / 2);
+      line(marginLeft + xPos - size / 2, marginTop + yPos + size / 2, 
+        marginLeft + xPos + size / 2, marginTop + yPos - size / 2);
+    }
+  }
+  
+  int getWinner() {
+    /* Check the values that arrange in all row, 
+     for horizontal, vertical, diagonal and otherwise case, respectively. */
+
+    // horizontal and vertical
+    for (int i = 0; i < board.getTableSize(); i++) {
+      int sumHoriz = 0, sumVert = 0;
+      for (int j = 0; j < board.getTableSize(); j++) {
+        if (board.getValue(i, j) == board.getValue(i, 0)) {
+          sumHoriz += board.getValue(i, j);
+        }
+        if (board.getValue(j, i) == board.getValue(0, i)) {
+          sumVert += board.getValue(j, i);
+        }
+      }
+      if ((sumHoriz == board.getTableSize()) || (sumVert == board.getTableSize())) {
+        result = true;
+        return 1;
+      } else if ((sumHoriz == 2 * board.getTableSize()) || (sumVert == 2 * board.getTableSize())) {
+        result = true;
+        return 2;
+      }
+    }
+
+    // diagonal
+    int sumDiagonal1 = 0, sumDiagonal2 = 0;
+    for (int i = 0; i < board.getTableSize(); i++) {
+      if (board.getValue(i, i) == board.getValue(0, 0)) {
+        sumDiagonal1 += board.getValue(i, i);
+      }
+      if (board.getValue(board.getTableSize() - i - 1, i) == board.getValue(board.getTableSize() - 1, 0)) {
+        sumDiagonal2 += board.getValue(board.getTableSize() - i - 1, i);
+      }
+    }
+    if ((sumDiagonal1 == board.getTableSize()) || (sumDiagonal2 == board.getTableSize())) {
+      result = true;
+      return 1;
+    } else if ((sumDiagonal1 == 2 * board.getTableSize()) || (sumDiagonal2 == 2 * board.getTableSize())) {
+      result = true;
+      return 2;
+    }
+
+    // otherwise
+    if (full == board.getTableSize() * board.getTableSize()) {
+      result = true;
+      return 3;
+    }
+
+    return 0;
+  }
+  
+  void showResult() {
+    /* Display the result scene to show the players who the win is.
+     1 for "O", 2 for "X" and otherwise for DRAW. */
+    
+    noFill();
+    if (result) {
+      if (getWinner() == 1) {
+        symbol(width / 2, tableArea / 2 + 80, 120, 1, #FFF8E1);
+        fill(#00796B);
+        textAlign(CENTER, TOP);
+        textSize(60);
+        text("WINNER!", width / 2 + 2, tableArea / 2 + 160 );
+        fill(255);
+        text("WINNER!", width / 2, tableArea / 2 + 160);
+        noFill();
+        if (adder) {
+          scoreO++;
+          adder = false;
+        }
+      } else if (getWinner() == 2) {
+        symbol(width / 2, tableArea /2 + 80, 120, 2, #424242);
+        fill(#00796B);
+        textAlign(CENTER, TOP);
+        textSize(60);
+        text("WINNER!", width / 2 + 2, tableArea / 2 + 160);
+        fill(255);
+        text("WINNER!", width / 2, tableArea / 2 + 160);
+        noFill();
+        if (adder) {
+          scoreX++;
+          adder = false;
+        }
+      } else if (getWinner() == 3) {
+        symbol(width / 2 - 70, tableArea / 2 + 80, 120, 2, #424242);
+        symbol(width / 2 + 70, tableArea /2 + 80, 120, 1, #FFF8E1);
+        fill(#00796B);
+        textAlign(CENTER, TOP);
+        textSize(60);
+        text("DRAW!", width / 2 + 2, tableArea / 2 + 160 );
+        fill(255);
+        text("DRAW!", width / 2, tableArea / 2 + 160);
+        noFill();
+      }
+      delay(500);
+    }
+  }
 }
